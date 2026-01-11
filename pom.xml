@@ -40,6 +40,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- PostgreSQL : Pour la production (Supabase/Render) -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 		<!-- Lombok : Pour simplifier le code -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
