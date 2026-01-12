@@ -1,4 +1,27 @@
-# Utiliser l'image de base Eclipse Temurin (OpenJDK 17)
+# ========================================
+# STAGE 1 : Build avec Maven
+# ========================================
+FROM eclipse-temurin:17-jdk AS builder
+
+WORKDIR /build
+
+# Copier les fichiers Maven
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+
+# Télécharger les dépendances (cache Docker)
+RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
+
+# Copier le code source
+COPY src src
+
+# Compiler l'application (sans tests pour gagner du temps)
+RUN ./mvnw clean package -DskipTests
+
+# ========================================
+# STAGE 2 : Image finale légère
+# ========================================
 FROM eclipse-temurin:17-jdk
 
 # Informations sur le maintainer
@@ -9,9 +32,8 @@ LABEL version="1.0"
 # Définir le répertoire de travail dans le conteneur
 WORKDIR /app
 
-# Copier le fichier JAR de l'application
-# Le fichier JAR est généré par Maven dans le dossier target/
-COPY target/gestion-bibliotheque-0.0.1-SNAPSHOT.jar app.jar
+# Copier le JAR depuis le stage de build
+COPY --from=builder /build/target/gestion-bibliotheque-0.0.1-SNAPSHOT.jar app.jar
 
 # Exposer le port 8080 (port par défaut de Spring Boot)
 EXPOSE 8080
