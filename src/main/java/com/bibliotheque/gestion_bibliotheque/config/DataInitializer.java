@@ -14,8 +14,10 @@ public class DataInitializer {
     @Bean
     CommandLineRunner initDatabase(LivreService livreService, MembreService membreService) {
         return args -> {
-            // Ajouter quelques livres de test
-            livreService.ajouterLivre(new Livre(
+            // Vérifier si des livres existent déjà (pour éviter les doublons en production)
+            if (livreService.obtenirTousLesLivres().isEmpty()) {
+                // Ajouter quelques livres de test
+                livreService.ajouterLivre(new Livre(
                     null, 
                     "Clean Architecture", 
                     "Robert C. Martin", 
@@ -100,7 +102,10 @@ public class DataInitializer {
                     "PERSONNEL"
             ));
 
-            System.out.println("✅ Données de test chargées avec succès !");
+                System.out.println("✅ Données de test chargées avec succès !");
+            } else {
+                System.out.println("ℹ️ Données déjà présentes en base, chargement ignoré.");
+            }
         };
     }
 }
