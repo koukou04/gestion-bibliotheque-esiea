@@ -70,24 +70,4 @@ public class Livre {
     public void setEtatPhysique(String etatPhysique) {
         this.etatPhysique = etatPhysique;
     }
-
-    // === MÉTHODES MÉTIER ===
-
-    public boolean estDisponible() {
-        return nombreDisponibles != null && nombreDisponibles > 0;
-    }
-
-    public void emprunter() {
-        if (!estDisponible()) {
-            throw new IllegalStateException("Aucun exemplaire disponible pour le livre: " + titre);
-        }
-        nombreDisponibles--;
-    }
-
-    public void retourner() {
-        if (nombreDisponibles >= nombreExemplaires) {
-            throw new IllegalStateException("Erreur: tous les exemplaires sont déjà en stock");
-        }
-        nombreDisponibles++;
-    }
 }

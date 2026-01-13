@@ -53,7 +53,9 @@ public class ReservationService {
             throw new IllegalStateException("Cette réservation ne peut pas être annulée");
         }
 
-        reservation.annuler();
+        // Logique métier déplacée depuis l'entité
+        reservation.setStatut("ANNULEE");
+        
         return reservationRepository.save(reservation);
     }
 
@@ -66,7 +68,11 @@ public class ReservationService {
 
         if (!reservationsEnAttente.isEmpty()) {
             Reservation premiereReservation = reservationsEnAttente.get(0);
-            premiereReservation.marquerDisponible();
+            
+            // Logique métier déplacée depuis l'entité
+            premiereReservation.setStatut("DISPONIBLE");
+            premiereReservation.setDateExpiration(LocalDate.now().plusDays(3)); // 3 jours pour retirer
+            
             reservationRepository.save(premiereReservation);
 
             // Note: Ici on pourrait envoyer une notification au membre
@@ -95,13 +101,20 @@ public class ReservationService {
             reservationRepository.findByStatut("DISPONIBLE");
 
         for (Reservation reservation : reservationsDisponibles) {
-            if (reservation.estExpiree()) {
-                reservation.marquerExpiree();
+            // Logique métier déplacée depuis l'entité
+            if (estExpiree(reservation)) {
+                reservation.setStatut("EXPIREE");
                 reservationRepository.save(reservation);
 
                 // Notifier la prochaine personne dans la file
                 notifierProchaineReservation(reservation.getLivreId());
             }
         }
+    }
+
+    // === MÉTHODE MÉTIER: Vérifier si une réservation est expirée ===
+    private boolean estExpiree(Reservation reservation) {
+        if (reservation.getDateExpiration() == null) return false;
+        return LocalDate.now().isAfter(reservation.getDateExpiration());
     }
 }

@@ -15,6 +15,7 @@ public class Membre {
     // Constructeurs
     public Membre() {}
 
+    // Constructeur simple pour inscrire un membre (quota sera calculé par le service)
     public Membre(Long id, String nom, String prenom, String email, String typeMembre) {
         this.id = id;
         this.nom = nom;
@@ -22,8 +23,20 @@ public class Membre {
         this.email = email;
         this.typeMembre = typeMembre;
         this.dateInscription = LocalDate.now();
-        this.scoreFiabilite = 50; // Score initial
-        this.quotaEmprunt = calculerQuota(typeMembre);
+        this.scoreFiabilite = 50;
+        this.quotaEmprunt = null; // Sera calculé par le service
+    }
+
+    // Constructeur complet
+    public Membre(Long id, String nom, String prenom, String email, String typeMembre, Integer quotaEmprunt) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.typeMembre = typeMembre;
+        this.dateInscription = LocalDate.now();
+        this.scoreFiabilite = 50;
+        this.quotaEmprunt = quotaEmprunt;
     }
 
     // Getters et Setters
@@ -42,7 +55,6 @@ public class Membre {
     public String getTypeMembre() { return typeMembre; }
     public void setTypeMembre(String typeMembre) {
         this.typeMembre = typeMembre;
-        this.quotaEmprunt = calculerQuota(typeMembre);
     }
 
     public Integer getQuotaEmprunt() { return quotaEmprunt; }
@@ -58,29 +70,5 @@ public class Membre {
     public LocalDate getDateInscription() { return dateInscription; }
     public void setDateInscription(LocalDate dateInscription) {
         this.dateInscription = dateInscription;
-    }
-
-    // Méthodes métier
-    private Integer calculerQuota(String type) {
-        switch (type.toUpperCase()) {
-            case "ETUDIANT": return 5;
-            case "ENSEIGNANT": return 10;
-            case "PERSONNEL": return 7;
-            default: return 3;
-        }
-    }
-
-    public void ajusterScore(int points) {
-        this.scoreFiabilite += points;
-        if (this.scoreFiabilite < 0) {
-            this.scoreFiabilite = 0;
-        }
-        if (this.scoreFiabilite > 100) {
-            this.scoreFiabilite = 100;
-        }
-    }
-
-    public boolean peutEmprunter(int nombreEmpruntsEnCours) {
-        return nombreEmpruntsEnCours < quotaEmprunt;
     }
 }

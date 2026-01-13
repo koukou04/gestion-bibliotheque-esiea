@@ -58,46 +58,4 @@ public class Emprunt {
 
     public Double getPenalite() { return penalite; }
     public void setPenalite(Double penalite) { this.penalite = penalite; }
-
-    // Méthodes métier
-    public boolean estEnRetard() {
-        if (dateRetourEffective != null) {
-            return dateRetourEffective.isAfter(dateRetourPrevue);
-        }
-        return LocalDate.now().isAfter(dateRetourPrevue);
-    }
-
-    public int joursDeRetard() {
-        LocalDate dateReference = dateRetourEffective != null
-                ? dateRetourEffective
-                : LocalDate.now();
-
-        if (dateReference.isAfter(dateRetourPrevue)) {
-            return (int) java.time.temporal.ChronoUnit.DAYS.between(
-                    dateRetourPrevue, dateReference
-            );
-        }
-        return 0;
-    }
-
-    public void calculerPenalite() {
-        int joursRetard = joursDeRetard();
-        if (joursRetard > 0) {
-            // 1 euro par jour de retard
-            this.penalite = joursRetard * 1.0;
-        } else {
-            this.penalite = 0.0;
-        }
-    }
-
-    public void retourner() {
-        this.dateRetourEffective = LocalDate.now();
-        calculerPenalite();
-
-        if (estEnRetard()) {
-            this.statut = "RETOURNE_EN_RETARD";
-        } else {
-            this.statut = "RETOURNE";
-        }
-    }
 }

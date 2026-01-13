@@ -75,10 +75,18 @@ public class StatistiqueService {
         if (totalEmprunts == 0) return 0.0;
 
         long empruntsEnRetard = empruntRepository.findAll().stream()
-                .filter(Emprunt::estEnRetard)
+                .filter(emprunt -> estEnRetard(emprunt))
                 .count();
 
         return (empruntsEnRetard * 100.0) / totalEmprunts;
+    }
+
+    // === MÉTHODE MÉTIER: Vérifier si un emprunt est en retard ===
+    private boolean estEnRetard(Emprunt emprunt) {
+        if (emprunt.getDateRetourEffective() != null) {
+            return emprunt.getDateRetourEffective().isAfter(emprunt.getDateRetourPrevue());
+        }
+        return LocalDate.now().isAfter(emprunt.getDateRetourPrevue());
     }
 
     // === STATISTIQUE: Statistiques par catégorie ===

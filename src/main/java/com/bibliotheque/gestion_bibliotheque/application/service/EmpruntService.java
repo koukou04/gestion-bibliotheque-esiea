@@ -99,14 +99,25 @@ public class EmpruntService {
             throw new IllegalStateException("Cet emprunt n'est pas en cours");
         }
 
-        // 2. Marquer comme retourné et calculer pénalités
-        emprunt.retourner();
+        // 2. Marquer comme retourné et calculer pénalités (logique métier déplacée)
+        emprunt.setDateRetourEffective(LocalDate.now());
+        
+        // Calculer la pénalité
+        int joursRetard = calculerJoursDeRetard(emprunt);
+        if (joursRetard > 0) {
+            emprunt.setPenalite(joursRetard * 1.0); // 1 euro par jour
+            emprunt.setStatut("RETOURNE_EN_RETARD");
+        } else {
+            emprunt.setPenalite(0.0);
+            emprunt.setStatut("RETOURNE");
+        }
 
         // 3. Incrémenter le nombre d'exemplaires disponibles
         livreService.retournerExemplaire(emprunt.getLivreId());
 
         // 4. Ajuster le score du membre
-        if (emprunt.estEnRetard()) {
+        boolean enRetard = estEnRetard(emprunt);
+        if (enRetard) {
             membreService.ajusterScore(emprunt.getMembreId(), -10); // Retard: -10 points
         } else {
             membreService.ajusterScore(emprunt.getMembreId(), 5);   // À temps: +5 points
@@ -117,6 +128,28 @@ public class EmpruntService {
 
         // 6. Sauvegarder l'emprunt
         return empruntRepository.save(emprunt);
+    }
+
+    // === MÉTHODE MÉTIER: Vérifier si un emprunt est en retard ===
+    private boolean estEnRetard(Emprunt emprunt) {
+        if (emprunt.getDateRetourEffective() != null) {
+            return emprunt.getDateRetourEffective().isAfter(emprunt.getDateRetourPrevue());
+        }
+        return LocalDate.now().isAfter(emprunt.getDateRetourPrevue());
+    }
+
+    // === MÉTHODE MÉTIER: Calculer les jours de retard ===
+    private int calculerJoursDeRetard(Emprunt emprunt) {
+        LocalDate dateReference = emprunt.getDateRetourEffective() != null
+                ? emprunt.getDateRetourEffective()
+                : LocalDate.now();
+
+        if (dateReference.isAfter(emprunt.getDateRetourPrevue())) {
+            return (int) java.time.temporal.ChronoUnit.DAYS.between(
+                    emprunt.getDateRetourPrevue(), dateReference
+            );
+        }
+        return 0;
     }
 
     // === USE CASE: Obtenir les emprunts d'un membre ===

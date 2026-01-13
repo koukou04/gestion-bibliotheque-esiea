@@ -50,29 +50,4 @@ public class Reservation {
     public void setDateExpiration(LocalDate dateExpiration) {
         this.dateExpiration = dateExpiration;
     }
-
-    // === MÉTHODES MÉTIER ===
-
-    // Marquer la réservation comme disponible (le livre est prêt à être retiré)
-    public void marquerDisponible() {
-        this.statut = "DISPONIBLE";
-        // Le membre a 3 jours pour retirer le livre
-        this.dateExpiration = LocalDate.now().plusDays(3);
-    }
-
-    // Annuler la réservation
-    public void annuler() {
-        this.statut = "ANNULEE";
-    }
-
-    // Vérifier si la réservation est expirée
-    public boolean estExpiree() {
-        if (dateExpiration == null) return false;
-        return LocalDate.now().isAfter(dateExpiration);
-    }
-
-    // Marquer comme expirée
-    public void marquerExpiree() {
-        this.statut = "EXPIREE";
-    }
 }

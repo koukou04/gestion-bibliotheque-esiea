@@ -93,7 +93,9 @@ public class LivreService {
     public boolean estDisponible(Long livreId) {
         Livre livre = livreRepository.findById(livreId)
                 .orElseThrow(() -> new IllegalArgumentException("Livre non trouvé"));
-        return livre.estDisponible();
+        
+        // Logique métier déplacée depuis l'entité
+        return livre.getNombreDisponibles() != null && livre.getNombreDisponibles() > 0;
     }
 
     // === MÉTHODE MÉTIER: Emprunter un exemplaire (appelé par EmpruntService) ===
@@ -101,7 +103,12 @@ public class LivreService {
         Livre livre = livreRepository.findById(livreId)
                 .orElseThrow(() -> new IllegalArgumentException("Livre non trouvé"));
 
-        livre.emprunter(); // Décrémente nombreDisponibles
+        // Logique métier déplacée depuis l'entité
+        if (livre.getNombreDisponibles() == null || livre.getNombreDisponibles() <= 0) {
+            throw new IllegalStateException("Aucun exemplaire disponible pour le livre: " + livre.getTitre());
+        }
+        livre.setNombreDisponibles(livre.getNombreDisponibles() - 1);
+        
         livreRepository.save(livre);
     }
 
@@ -110,7 +117,12 @@ public class LivreService {
         Livre livre = livreRepository.findById(livreId)
                 .orElseThrow(() -> new IllegalArgumentException("Livre non trouvé"));
 
-        livre.retourner(); // Incrémente nombreDisponibles
+        // Logique métier déplacée depuis l'entité
+        if (livre.getNombreDisponibles() >= livre.getNombreExemplaires()) {
+            throw new IllegalStateException("Erreur: tous les exemplaires sont déjà en stock");
+        }
+        livre.setNombreDisponibles(livre.getNombreDisponibles() + 1);
+        
         livreRepository.save(livre);
     }
 }

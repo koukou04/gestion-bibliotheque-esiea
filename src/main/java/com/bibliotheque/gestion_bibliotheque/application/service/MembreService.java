@@ -25,8 +25,22 @@ public class MembreService {
             throw new IllegalArgumentException("Un membre avec cet email existe déjà: " + membre.getEmail());
         }
 
+        // Calculer le quota selon le type
+        membre.setQuotaEmprunt(calculerQuota(membre.getTypeMembre()));
+
         // Sauvegarder le membre
         return membreRepository.save(membre);
+    }
+
+    // === MÉTHODE MÉTIER: Calculer le quota selon le type de membre ===
+    private Integer calculerQuota(String type) {
+        if (type == null) return 3;
+        switch (type.toUpperCase()) {
+            case "ETUDIANT": return 5;
+            case "ENSEIGNANT": return 10;
+            case "PERSONNEL": return 7;
+            default: return 3;
+        }
     }
 
     // === USE CASE: Trouver un membre par ID ===
@@ -64,6 +78,9 @@ public class MembreService {
         membre.setPrenom(membreModifie.getPrenom());
         membre.setEmail(membreModifie.getEmail());
         membre.setTypeMembre(membreModifie.getTypeMembre());
+        
+        // Recalculer le quota si le type a changé
+        membre.setQuotaEmprunt(calculerQuota(membreModifie.getTypeMembre()));
 
         return membreRepository.save(membre);
     }
@@ -81,7 +98,16 @@ public class MembreService {
         Membre membre = membreRepository.findById(membreId)
                 .orElseThrow(() -> new IllegalArgumentException("Membre non trouvé"));
 
-        membre.ajusterScore(points);
+        // Logique métier déplacée depuis l'entité
+        int nouveauScore = membre.getScoreFiabilite() + points;
+        if (nouveauScore < 0) {
+            nouveauScore = 0;
+        }
+        if (nouveauScore > 100) {
+            nouveauScore = 100;
+        }
+        membre.setScoreFiabilite(nouveauScore);
+        
         membreRepository.save(membre);
     }
 
@@ -90,7 +116,8 @@ public class MembreService {
         Membre membre = membreRepository.findById(membreId)
                 .orElseThrow(() -> new IllegalArgumentException("Membre non trouvé"));
 
-        return membre.peutEmprunter(nombreEmpruntsEnCours);
+        // Logique métier déplacée depuis l'entité
+        return nombreEmpruntsEnCours < membre.getQuotaEmprunt();
     }
 
     // === MÉTHODE MÉTIER: Obtenir le quota d'un membre ===
