@@ -1,6 +1,5 @@
 package com.bibliotheque.gestion_bibliotheque.domain.entities;
 
-
 public class Livre {
     private Long id;
     private String titre;
@@ -28,11 +27,12 @@ public class Livre {
         this.anneePublication = anneePublication;
         this.categorie = categorie;
         this.nombreExemplaires = nombreExemplaires;
-        this.nombreDisponibles = nombreExemplaires; // Au début tous dispo
+        this.nombreDisponibles = nombreExemplaires;
         this.etatPhysique = etatPhysique;
     }
 
-    // Getters et Setters
+    // ========== GETTERS ET SETTERS UNIQUEMENT ==========
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -69,25 +69,5 @@ public class Livre {
     public String getEtatPhysique() { return etatPhysique; }
     public void setEtatPhysique(String etatPhysique) {
         this.etatPhysique = etatPhysique;
-    }
-
-    // === MÉTHODES MÉTIER ===
-
-    public boolean estDisponible() {
-        return nombreDisponibles != null && nombreDisponibles > 0;
-    }
-
-    public void emprunter() {
-        if (!estDisponible()) {
-            throw new IllegalStateException("Aucun exemplaire disponible pour le livre: " + titre);
-        }
-        nombreDisponibles--;
-    }
-
-    public void retourner() {
-        if (nombreDisponibles >= nombreExemplaires) {
-            throw new IllegalStateException("Erreur: tous les exemplaires sont déjà en stock");
-        }
-        nombreDisponibles++;
     }
 }

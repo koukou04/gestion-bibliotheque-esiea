@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/livres")
+@RequestMapping("/livres")
 @Tag(name = "Gestion des Livres", description = "APIs pour gérer le catalogue de livres")
 public class LivreController {
 
@@ -36,11 +36,29 @@ public class LivreController {
         }
     }
 
-    // === OBTENIR TOUS LES LIVRES ===
+    // === OBTENIR LES LIVRES (avec filtres optionnels) ===
     @GetMapping
-    @Operation(summary = "Obtenir tous les livres", description = "Récupère la liste complète des livres")
-    public ResponseEntity<List<LivreDto>> obtenirTousLesLivres() {
-        List<Livre> livres = livreService.obtenirTousLesLivres();
+    @Operation(summary = "Obtenir les livres", description = "Récupère les livres avec filtres optionnels (titre, auteur, categorie, disponible)")
+    public ResponseEntity<List<LivreDto>> obtenirLivres(
+            @RequestParam(required = false) String titre,
+            @RequestParam(required = false) String auteur,
+            @RequestParam(required = false) String categorie,
+            @RequestParam(required = false) Boolean disponible) {
+
+        List<Livre> livres;
+
+        if (titre != null) {
+            livres = livreService.rechercherParTitre(titre);
+        } else if (auteur != null) {
+            livres = livreService.rechercherParAuteur(auteur);
+        } else if (categorie != null) {
+            livres = livreService.rechercherParCategorie(categorie);
+        } else if (Boolean.TRUE.equals(disponible)) {
+            livres = livreService.obtenirLivresDisponibles();
+        } else {
+            livres = livreService.obtenirTousLesLivres();
+        }
+
         return ResponseEntity.ok(LivreMapper.toDtoList(livres));
     }
 
@@ -51,38 +69,6 @@ public class LivreController {
         return livreService.trouverLivreParId(id)
                 .map(livre -> ResponseEntity.ok(LivreMapper.toDto(livre)))
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    // === RECHERCHER PAR TITRE ===
-    @GetMapping("/recherche/titre")
-    @Operation(summary = "Rechercher par titre", description = "Recherche des livres par titre (partiel)")
-    public ResponseEntity<List<LivreDto>> rechercherParTitre(@RequestParam String titre) {
-        List<Livre> livres = livreService.rechercherParTitre(titre);
-        return ResponseEntity.ok(LivreMapper.toDtoList(livres));
-    }
-
-    // === RECHERCHER PAR AUTEUR ===
-    @GetMapping("/recherche/auteur")
-    @Operation(summary = "Rechercher par auteur", description = "Recherche des livres par auteur (partiel)")
-    public ResponseEntity<List<LivreDto>> rechercherParAuteur(@RequestParam String auteur) {
-        List<Livre> livres = livreService.rechercherParAuteur(auteur);
-        return ResponseEntity.ok(LivreMapper.toDtoList(livres));
-    }
-
-    // === RECHERCHER PAR CATÉGORIE ===
-    @GetMapping("/recherche/categorie")
-    @Operation(summary = "Rechercher par catégorie", description = "Filtre les livres par catégorie")
-    public ResponseEntity<List<LivreDto>> rechercherParCategorie(@RequestParam String categorie) {
-        List<Livre> livres = livreService.rechercherParCategorie(categorie);
-        return ResponseEntity.ok(LivreMapper.toDtoList(livres));
-    }
-
-    // === OBTENIR LES LIVRES DISPONIBLES ===
-    @GetMapping("/disponibles")
-    @Operation(summary = "Obtenir les livres disponibles", description = "Récupère tous les livres qui ont au moins un exemplaire disponible")
-    public ResponseEntity<List<LivreDto>> obtenirLivresDisponibles() {
-        List<Livre> livres = livreService.obtenirLivresDisponibles();
-        return ResponseEntity.ok(LivreMapper.toDtoList(livres));
     }
 
     // === MODIFIER UN LIVRE ===

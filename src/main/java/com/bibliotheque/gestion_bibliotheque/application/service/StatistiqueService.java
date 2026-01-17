@@ -5,13 +5,11 @@ import com.bibliotheque.gestion_bibliotheque.domain.entities.Livre;
 import com.bibliotheque.gestion_bibliotheque.domain.repository.EmpruntRepository;
 import com.bibliotheque.gestion_bibliotheque.domain.repository.LivreRepository;
 import com.bibliotheque.gestion_bibliotheque.domain.repository.MembreRepository;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
 public class StatistiqueService {
 
     private final EmpruntRepository empruntRepository;
@@ -74,8 +72,16 @@ public class StatistiqueService {
         long totalEmprunts = empruntRepository.findAll().size();
         if (totalEmprunts == 0) return 0.0;
 
+        // ✅ Logique métier déplacée ICI (au lieu d'appeler emprunt.estEnRetard())
         long empruntsEnRetard = empruntRepository.findAll().stream()
-                .filter(Emprunt::estEnRetard)
+                .filter(emprunt -> {
+                    // Si l'emprunt a été retourné, vérifier avec la date de retour effective
+                    if (emprunt.getDateRetourEffective() != null) {
+                        return emprunt.getDateRetourEffective().isAfter(emprunt.getDateRetourPrevue());
+                    }
+                    // Sinon, vérifier avec la date actuelle (pour les emprunts en cours)
+                    return LocalDate.now().isAfter(emprunt.getDateRetourPrevue());
+                })
                 .count();
 
         return (empruntsEnRetard * 100.0) / totalEmprunts;

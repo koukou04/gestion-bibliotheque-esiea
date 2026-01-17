@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/membres")
+@RequestMapping("/membres")
 @Tag(name = "Gestion des Membres", description = "APIs pour gérer les membres de la bibliothèque")
 public class MembreController {
 
@@ -36,11 +36,27 @@ public class MembreController {
         }
     }
 
-    // === OBTENIR TOUS LES MEMBRES ===
+    // === OBTENIR LES MEMBRES (avec filtres optionnels) ===
     @GetMapping
-    @Operation(summary = "Obtenir tous les membres", description = "Récupère la liste de tous les membres inscrits")
-    public ResponseEntity<List<MembreDto>> obtenirTousLesMembres() {
-        List<Membre> membres = membreService.obtenirTousLesMembres();
+    @Operation(summary = "Obtenir les membres", description = "Récupère les membres avec filtres optionnels (email, typeMembre)")
+    public ResponseEntity<List<MembreDto>> obtenirMembres(
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String typeMembre) {
+
+        // Si email est fourni, retourner le membre correspondant (ou liste vide)
+        if (email != null) {
+            return membreService.trouverMembreParEmail(email)
+                    .map(membre -> ResponseEntity.ok(List.of(MembreMapper.toDto(membre))))
+                    .orElse(ResponseEntity.ok(List.of()));
+        }
+
+        List<Membre> membres;
+        if (typeMembre != null) {
+            membres = membreService.obtenirMembresParType(typeMembre);
+        } else {
+            membres = membreService.obtenirTousLesMembres();
+        }
+
         return ResponseEntity.ok(MembreMapper.toDtoList(membres));
     }
 
@@ -51,23 +67,6 @@ public class MembreController {
         return membreService.trouverMembreParId(id)
                 .map(membre -> ResponseEntity.ok(MembreMapper.toDto(membre)))
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    // === RECHERCHER PAR EMAIL ===
-    @GetMapping("/email/{email}")
-    @Operation(summary = "Rechercher un membre par email", description = "Trouve un membre à partir de son adresse email")
-    public ResponseEntity<MembreDto> rechercherParEmail(@PathVariable String email) {
-        return membreService.trouverMembreParEmail(email)
-                .map(membre -> ResponseEntity.ok(MembreMapper.toDto(membre)))
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    // === FILTRER PAR TYPE DE MEMBRE ===
-    @GetMapping("/type/{typeMembre}")
-    @Operation(summary = "Filtrer par type de membre", description = "Récupère les membres d'un type spécifique (ETUDIANT, ENSEIGNANT, PERSONNEL)")
-    public ResponseEntity<List<MembreDto>> rechercherParType(@PathVariable String typeMembre) {
-        List<Membre> membres = membreService.obtenirMembresParType(typeMembre);
-        return ResponseEntity.ok(MembreMapper.toDtoList(membres));
     }
 
     // === MODIFIER UN MEMBRE ===

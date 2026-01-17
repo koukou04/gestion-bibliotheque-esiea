@@ -1,31 +1,24 @@
 package com.bibliotheque.gestion_bibliotheque.application.service;
 
-
 import com.bibliotheque.gestion_bibliotheque.domain.entities.Membre;
 import com.bibliotheque.gestion_bibliotheque.domain.repository.MembreRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
 public class MembreService {
 
     private final MembreRepository membreRepository;
 
-    // Injection de dépendances via constructeur
     public MembreService(MembreRepository membreRepository) {
         this.membreRepository = membreRepository;
     }
 
     // === USE CASE: Inscrire un nouveau membre ===
     public Membre inscrireMembre(Membre membre) {
-        // Vérifier que l'email n'existe pas déjà
         if (membreRepository.existsByEmail(membre.getEmail())) {
             throw new IllegalArgumentException("Un membre avec cet email existe déjà: " + membre.getEmail());
         }
-
-        // Sauvegarder le membre
         return membreRepository.save(membre);
     }
 
@@ -59,7 +52,6 @@ public class MembreService {
         Membre membre = membreRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Membre non trouvé avec l'ID: " + id));
 
-        // Mettre à jour les champs
         membre.setNom(membreModifie.getNom());
         membre.setPrenom(membreModifie.getPrenom());
         membre.setEmail(membreModifie.getEmail());
@@ -76,12 +68,22 @@ public class MembreService {
         membreRepository.deleteById(id);
     }
 
-    // === USE CASE: Calculer le score de fiabilité ===
+    // === MÉTHODE MÉTIER: Ajuster le score ===
     public void ajusterScore(Long membreId, int points) {
         Membre membre = membreRepository.findById(membreId)
                 .orElseThrow(() -> new IllegalArgumentException("Membre non trouvé"));
 
-        membre.ajusterScore(points);
+        // ✅ Logique métier déplacée ICI
+        int nouveauScore = membre.getScoreFiabilite() + points;
+
+        if (nouveauScore < 0) {
+            nouveauScore = 0;
+        }
+        if (nouveauScore > 100) {
+            nouveauScore = 100;
+        }
+
+        membre.setScoreFiabilite(nouveauScore);
         membreRepository.save(membre);
     }
 
@@ -90,14 +92,14 @@ public class MembreService {
         Membre membre = membreRepository.findById(membreId)
                 .orElseThrow(() -> new IllegalArgumentException("Membre non trouvé"));
 
-        return membre.peutEmprunter(nombreEmpruntsEnCours);
+        // ✅ Logique métier déplacée ICI
+        return nombreEmpruntsEnCours < membre.getQuotaEmprunt();
     }
 
     // === MÉTHODE MÉTIER: Obtenir le quota d'un membre ===
     public Integer obtenirQuota(Long membreId) {
         Membre membre = membreRepository.findById(membreId)
                 .orElseThrow(() -> new IllegalArgumentException("Membre non trouvé"));
-
         return membre.getQuotaEmprunt();
     }
 
@@ -105,7 +107,6 @@ public class MembreService {
     public Integer obtenirScore(Long membreId) {
         Membre membre = membreRepository.findById(membreId)
                 .orElseThrow(() -> new IllegalArgumentException("Membre non trouvé"));
-
         return membre.getScoreFiabilite();
     }
 }

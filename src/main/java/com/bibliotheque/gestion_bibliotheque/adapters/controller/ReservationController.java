@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/reservations")
+@RequestMapping("/reservations")
 @Tag(name = "Gestion des Réservations", description = "APIs pour gérer les réservations de livres")
 public class ReservationController {
 
@@ -49,19 +49,24 @@ public class ReservationController {
         }
     }
 
-    // === OBTENIR LES RÉSERVATIONS D'UN MEMBRE ===
-    @GetMapping("/membre/{membreId}")
-    @Operation(summary = "Obtenir les réservations d'un membre", description = "Récupère toutes les réservations d'un membre")
-    public ResponseEntity<List<ReservationDto>> obtenirReservationsParMembre(@PathVariable Long membreId) {
-        List<Reservation> reservations = reservationService.obtenirReservationsParMembre(membreId);
-        return ResponseEntity.ok(ReservationMapper.toDtoList(reservations));
-    }
+    // === OBTENIR LES RÉSERVATIONS (avec filtres optionnels) ===
+    @GetMapping
+    @Operation(summary = "Obtenir les réservations", description = "Récupère les réservations avec filtres optionnels (membreId, livreId)")
+    public ResponseEntity<List<ReservationDto>> obtenirReservations(
+            @RequestParam(required = false) Long membreId,
+            @RequestParam(required = false) Long livreId) {
 
-    // === OBTENIR LES RÉSERVATIONS D'UN LIVRE ===
-    @GetMapping("/livre/{livreId}")
-    @Operation(summary = "Obtenir les réservations d'un livre", description = "Récupère toutes les réservations pour un livre")
-    public ResponseEntity<List<ReservationDto>> obtenirReservationsParLivre(@PathVariable Long livreId) {
-        List<Reservation> reservations = reservationService.obtenirReservationsParLivre(livreId);
+        List<Reservation> reservations;
+
+        if (membreId != null) {
+            reservations = reservationService.obtenirReservationsParMembre(membreId);
+        } else if (livreId != null) {
+            reservations = reservationService.obtenirReservationsParLivre(livreId);
+        } else {
+            // Retourne une liste vide si aucun filtre n'est fourni (ou implémenter une méthode pour tout récupérer)
+            reservations = List.of();
+        }
+
         return ResponseEntity.ok(ReservationMapper.toDtoList(reservations));
     }
 

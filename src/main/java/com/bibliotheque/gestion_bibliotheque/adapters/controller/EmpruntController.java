@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/emprunts")
+@RequestMapping("/emprunts")
 @Tag(name = "Gestion des Emprunts", description = "APIs pour gérer les emprunts de livres")
 public class EmpruntController {
 
@@ -50,27 +50,25 @@ public class EmpruntController {
         }
     }
 
-    // === OBTENIR LES EMPRUNTS D'UN MEMBRE ===
-    @GetMapping("/membre/{membreId}")
-    @Operation(summary = "Obtenir les emprunts d'un membre", description = "Récupère l'historique des emprunts d'un membre")
-    public ResponseEntity<List<EmpruntDto>> obtenirEmpruntsParMembre(@PathVariable Long membreId) {
-        List<Emprunt> emprunts = empruntService.obtenirEmpruntsParMembre(membreId);
-        return ResponseEntity.ok(EmpruntMapper.toDtoList(emprunts));
-    }
+    // === OBTENIR LES EMPRUNTS (avec filtres optionnels) ===
+    @GetMapping
+    @Operation(summary = "Obtenir les emprunts", description = "Récupère les emprunts avec filtres optionnels (membreId, statut: en-cours, en-retard)")
+    public ResponseEntity<List<EmpruntDto>> obtenirEmprunts(
+            @RequestParam(required = false) Long membreId,
+            @RequestParam(required = false) String statut) {
 
-    // === OBTENIR TOUS LES EMPRUNTS EN COURS ===
-    @GetMapping("/en-cours")
-    @Operation(summary = "Obtenir les emprunts en cours", description = "Récupère tous les emprunts actuellement en cours")
-    public ResponseEntity<List<EmpruntDto>> obtenirEmpruntsEnCours() {
-        List<Emprunt> emprunts = empruntService.obtenirEmpruntsEnCours();
-        return ResponseEntity.ok(EmpruntMapper.toDtoList(emprunts));
-    }
+        List<Emprunt> emprunts;
 
-    // === OBTENIR LES EMPRUNTS EN RETARD ===
-    @GetMapping("/en-retard")
-    @Operation(summary = "Obtenir les emprunts en retard", description = "Récupère tous les emprunts qui sont en retard")
-    public ResponseEntity<List<EmpruntDto>> obtenirEmpruntsEnRetard() {
-        List<Emprunt> emprunts = empruntService.obtenirEmpruntsEnRetard();
+        if (membreId != null) {
+            emprunts = empruntService.obtenirEmpruntsParMembre(membreId);
+        } else if ("en-cours".equals(statut)) {
+            emprunts = empruntService.obtenirEmpruntsEnCours();
+        } else if ("en-retard".equals(statut)) {
+            emprunts = empruntService.obtenirEmpruntsEnRetard();
+        } else {
+            emprunts = empruntService.obtenirEmpruntsEnCours(); // Par défaut, retourne les emprunts en cours
+        }
+
         return ResponseEntity.ok(EmpruntMapper.toDtoList(emprunts));
     }
 

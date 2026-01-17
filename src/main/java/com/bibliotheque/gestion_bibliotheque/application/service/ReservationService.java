@@ -1,46 +1,69 @@
 package com.bibliotheque.gestion_bibliotheque.application.service;
 
+import com.bibliotheque.gestion_bibliotheque.adapters.messaging.event.ReservationCreeEvent;
+import com.bibliotheque.gestion_bibliotheque.adapters.messaging.producer.ReservationEventProducer;
+import com.bibliotheque.gestion_bibliotheque.domain.entities.Livre;
+import com.bibliotheque.gestion_bibliotheque.domain.entities.Membre;
 import com.bibliotheque.gestion_bibliotheque.domain.entities.Reservation;
 import com.bibliotheque.gestion_bibliotheque.domain.repository.ReservationRepository;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final LivreService livreService;
+    private final MembreService membreService;
+    private final ReservationEventProducer reservationEventProducer;
 
     public ReservationService(ReservationRepository reservationRepository,
-                              LivreService livreService) {
+                              LivreService livreService,
+                              MembreService membreService,
+                              ReservationEventProducer reservationEventProducer) {
         this.reservationRepository = reservationRepository;
         this.livreService = livreService;
+        this.membreService = membreService;
+        this.reservationEventProducer = reservationEventProducer;
     }
 
     // === USE CASE: Réserver un livre ===
     public Reservation reserverLivre(Long livreId, Long membreId) {
-        // 1. Vérifier que le livre existe
-        if (!livreService.trouverLivreParId(livreId).isPresent()) {
-            throw new IllegalArgumentException("Livre non trouvé");
-        }
+        Livre livre = livreService.trouverLivreParId(livreId)
+                .orElseThrow(() -> new IllegalArgumentException("Livre non trouvé"));
 
-        // 2. Vérifier que le livre n'est pas disponible (sinon pas besoin de réserver)
         if (livreService.estDisponible(livreId)) {
             throw new IllegalStateException("Le livre est disponible, pas besoin de réserver");
         }
 
-        // 3. Calculer la position dans la file d'attente
         int position = reservationRepository.countByLivreIdAndStatut(livreId, "EN_ATTENTE") + 1;
-
-        // 4. Créer la réservation
         LocalDate dateReservation = LocalDate.now();
         Reservation reservation = new Reservation(null, livreId, membreId, dateReservation, position);
+        Reservation reservationSauvegardee = reservationRepository.save(reservation);
 
-        // 5. Sauvegarder la réservation
-        return reservationRepository.save(reservation);
+        if (reservationEventProducer != null) {
+            try {
+                Membre membre = membreService.trouverMembreParId(membreId)
+                        .orElseThrow(() -> new IllegalArgumentException("Membre non trouvé"));
+
+                ReservationCreeEvent event = new ReservationCreeEvent(
+                        reservationSauvegardee.getId(),
+                        livre.getId(),
+                        membre.getId(),
+                        livre.getTitre(),
+                        membre.getNom() + " " + membre.getPrenom(),
+                        membre.getEmail(),
+                        dateReservation,
+                        position
+                );
+                reservationEventProducer.publierReservation(event);
+            } catch (Exception e) {
+                System.err.println("Erreur lors de la publication de l'événement Kafka: " + e.getMessage());
+            }
+        }
+
+        return reservationSauvegardee;
     }
 
     // === USE CASE: Annuler une réservation ===
@@ -49,28 +72,28 @@ public class ReservationService {
                 .orElseThrow(() -> new IllegalArgumentException("Réservation non trouvée"));
 
         if (!"EN_ATTENTE".equals(reservation.getStatut()) &&
-            !"DISPONIBLE".equals(reservation.getStatut())) {
+                !"DISPONIBLE".equals(reservation.getStatut())) {
             throw new IllegalStateException("Cette réservation ne peut pas être annulée");
         }
 
-        reservation.annuler();
+        // ✅ Logique métier déplacée ICI
+        reservation.setStatut("ANNULEE");
         return reservationRepository.save(reservation);
     }
 
     // === USE CASE: Notifier qu'un livre est disponible ===
-    // Cette méthode est appelée quand un livre est retourné
     public void notifierProchaineReservation(Long livreId) {
-        // Trouver la première réservation en attente
-        List<Reservation> reservationsEnAttente = 
-            reservationRepository.findByLivreIdAndStatutOrderByPosition(livreId, "EN_ATTENTE");
+        List<Reservation> reservationsEnAttente =
+                reservationRepository.findByLivreIdAndStatutOrderByPosition(livreId, "EN_ATTENTE");
 
         if (!reservationsEnAttente.isEmpty()) {
             Reservation premiereReservation = reservationsEnAttente.get(0);
-            premiereReservation.marquerDisponible();
-            reservationRepository.save(premiereReservation);
 
-            // Note: Ici on pourrait envoyer une notification au membre
-            // Mais on n'a pas implémenté le système de notifications complet
+            // ✅ Logique métier déplacée ICI
+            premiereReservation.setStatut("DISPONIBLE");
+            premiereReservation.setDateExpiration(LocalDate.now().plusDays(3));
+
+            reservationRepository.save(premiereReservation);
         }
     }
 
@@ -91,15 +114,16 @@ public class ReservationService {
 
     // === USE CASE: Vérifier et marquer les réservations expirées ===
     public void verifierReservationsExpirees() {
-        List<Reservation> reservationsDisponibles = 
-            reservationRepository.findByStatut("DISPONIBLE");
+        List<Reservation> reservationsDisponibles =
+                reservationRepository.findByStatut("DISPONIBLE");
 
         for (Reservation reservation : reservationsDisponibles) {
-            if (reservation.estExpiree()) {
-                reservation.marquerExpiree();
-                reservationRepository.save(reservation);
+            // ✅ Logique métier déplacée ICI
+            if (reservation.getDateExpiration() != null &&
+                    LocalDate.now().isAfter(reservation.getDateExpiration())) {
 
-                // Notifier la prochaine personne dans la file
+                reservation.setStatut("EXPIREE");
+                reservationRepository.save(reservation);
                 notifierProchaineReservation(reservation.getLivreId());
             }
         }

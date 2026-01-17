@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/statistiques")
+@RequestMapping("/statistiques")
 @Tag(name = "Statistiques et Rapports", description = "APIs pour consulter les statistiques de la bibliothèque")
 public class StatistiqueController {
 

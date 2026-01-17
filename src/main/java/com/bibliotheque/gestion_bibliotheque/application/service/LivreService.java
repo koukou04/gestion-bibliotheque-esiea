@@ -1,31 +1,24 @@
 package com.bibliotheque.gestion_bibliotheque.application.service;
 
-
 import com.bibliotheque.gestion_bibliotheque.domain.entities.Livre;
 import com.bibliotheque.gestion_bibliotheque.domain.repository.LivreRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
 public class LivreService {
 
     private final LivreRepository livreRepository;
 
-    // Injection de dépendances via constructeur
     public LivreService(LivreRepository livreRepository) {
         this.livreRepository = livreRepository;
     }
 
     // === USE CASE: Ajouter un livre au catalogue ===
     public Livre ajouterLivre(Livre livre) {
-        // Vérifier que l'ISBN n'existe pas déjà
         if (livreRepository.findByIsbn(livre.getIsbn()).isPresent()) {
             throw new IllegalArgumentException("Un livre avec cet ISBN existe déjà: " + livre.getIsbn());
         }
-
-        // Sauvegarder le livre
         return livreRepository.save(livre);
     }
 
@@ -69,7 +62,6 @@ public class LivreService {
         Livre livre = livreRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Livre non trouvé avec l'ID: " + id));
 
-        // Mettre à jour les champs
         livre.setTitre(livreModifie.getTitre());
         livre.setAuteur(livreModifie.getAuteur());
         livre.setEditeur(livreModifie.getEditeur());
@@ -93,24 +85,35 @@ public class LivreService {
     public boolean estDisponible(Long livreId) {
         Livre livre = livreRepository.findById(livreId)
                 .orElseThrow(() -> new IllegalArgumentException("Livre non trouvé"));
-        return livre.estDisponible();
+        // ✅ Logique métier déplacée ICI
+        return livre.getNombreDisponibles() != null && livre.getNombreDisponibles() > 0;
     }
 
-    // === MÉTHODE MÉTIER: Emprunter un exemplaire (appelé par EmpruntService) ===
+    // === MÉTHODE MÉTIER: Emprunter un exemplaire ===
     public void emprunterExemplaire(Long livreId) {
         Livre livre = livreRepository.findById(livreId)
                 .orElseThrow(() -> new IllegalArgumentException("Livre non trouvé"));
 
-        livre.emprunter(); // Décrémente nombreDisponibles
+        // ✅ Logique métier déplacée ICI
+        if (livre.getNombreDisponibles() == null || livre.getNombreDisponibles() <= 0) {
+            throw new IllegalStateException("Aucun exemplaire disponible pour le livre: " + livre.getTitre());
+        }
+
+        livre.setNombreDisponibles(livre.getNombreDisponibles() - 1);
         livreRepository.save(livre);
     }
 
-    // === MÉTHODE MÉTIER: Retourner un exemplaire (appelé par EmpruntService) ===
+    // === MÉTHODE MÉTIER: Retourner un exemplaire ===
     public void retournerExemplaire(Long livreId) {
         Livre livre = livreRepository.findById(livreId)
                 .orElseThrow(() -> new IllegalArgumentException("Livre non trouvé"));
 
-        livre.retourner(); // Incrémente nombreDisponibles
+        // ✅ Logique métier déplacée ICI
+        if (livre.getNombreDisponibles() >= livre.getNombreExemplaires()) {
+            throw new IllegalStateException("Erreur: tous les exemplaires sont déjà en stock");
+        }
+
+        livre.setNombreDisponibles(livre.getNombreDisponibles() + 1);
         livreRepository.save(livre);
     }
 }

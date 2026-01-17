@@ -8,8 +8,8 @@ public class Reservation {
     private Long membreId;
     private LocalDate dateReservation;
     private String statut; // EN_ATTENTE, DISPONIBLE, ANNULEE, EXPIREE
-    private Integer position; // Position dans la file d'attente
-    private LocalDate dateExpiration; // Date limite pour retirer le livre
+    private Integer position;
+    private LocalDate dateExpiration;
 
     // Constructeur vide
     public Reservation() {}
@@ -25,7 +25,8 @@ public class Reservation {
         this.dateExpiration = null;
     }
 
-    // Getters et Setters
+    // ========== GETTERS ET SETTERS UNIQUEMENT ==========
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -49,30 +50,5 @@ public class Reservation {
     public LocalDate getDateExpiration() { return dateExpiration; }
     public void setDateExpiration(LocalDate dateExpiration) {
         this.dateExpiration = dateExpiration;
-    }
-
-    // === MÉTHODES MÉTIER ===
-
-    // Marquer la réservation comme disponible (le livre est prêt à être retiré)
-    public void marquerDisponible() {
-        this.statut = "DISPONIBLE";
-        // Le membre a 3 jours pour retirer le livre
-        this.dateExpiration = LocalDate.now().plusDays(3);
-    }
-
-    // Annuler la réservation
-    public void annuler() {
-        this.statut = "ANNULEE";
-    }
-
-    // Vérifier si la réservation est expirée
-    public boolean estExpiree() {
-        if (dateExpiration == null) return false;
-        return LocalDate.now().isAfter(dateExpiration);
-    }
-
-    // Marquer comme expirée
-    public void marquerExpiree() {
-        this.statut = "EXPIREE";
     }
 }
