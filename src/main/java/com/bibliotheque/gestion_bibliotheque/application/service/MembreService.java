@@ -1,8 +1,4 @@
-<<<<<<< HEAD:src/main/java/com/bibliotheque/gestion_bibliotheque/application/usecase/GestionMembreUseCase.java
-package com.bibliotheque.gestion_bibliotheque.application.usecase;
-=======
 package com.bibliotheque.gestion_bibliotheque.application.service;
->>>>>>> koussaila:src/main/java/com/bibliotheque/gestion_bibliotheque/application/service/MembreService.java
 
 import com.bibliotheque.gestion_bibliotheque.domain.entities.Membre;
 import com.bibliotheque.gestion_bibliotheque.domain.repository.MembreRepository;
@@ -10,20 +6,11 @@ import com.bibliotheque.gestion_bibliotheque.domain.repository.MembreRepository;
 import java.util.List;
 import java.util.Optional;
 
-<<<<<<< HEAD:src/main/java/com/bibliotheque/gestion_bibliotheque/application/usecase/GestionMembreUseCase.java
-@Service
-public class GestionMembreUseCase {
-
-    private final MembreRepository membreRepository;
-
-    public GestionMembreUseCase(MembreRepository membreRepository) {
-=======
 public class MembreService {
 
     private final MembreRepository membreRepository;
 
     public MembreService(MembreRepository membreRepository) {
->>>>>>> koussaila:src/main/java/com/bibliotheque/gestion_bibliotheque/application/service/MembreService.java
         this.membreRepository = membreRepository;
     }
 
@@ -85,9 +72,6 @@ public class MembreService {
     public void ajusterScore(Long membreId, int points) {
         Membre membre = membreRepository.findById(membreId)
                 .orElseThrow(() -> new IllegalArgumentException("Membre non trouvé"));
-<<<<<<< HEAD:src/main/java/com/bibliotheque/gestion_bibliotheque/application/usecase/GestionMembreUseCase.java
-        membre.ajusterScore(points);
-=======
 
         // ✅ Logique métier déplacée ICI
         int nouveauScore = membre.getScoreFiabilite() + points;
@@ -100,7 +84,6 @@ public class MembreService {
         }
 
         membre.setScoreFiabilite(nouveauScore);
->>>>>>> koussaila:src/main/java/com/bibliotheque/gestion_bibliotheque/application/service/MembreService.java
         membreRepository.save(membre);
     }
 
@@ -108,13 +91,9 @@ public class MembreService {
     public boolean peutEmprunter(Long membreId, int nombreEmpruntsEnCours) {
         Membre membre = membreRepository.findById(membreId)
                 .orElseThrow(() -> new IllegalArgumentException("Membre non trouvé"));
-<<<<<<< HEAD:src/main/java/com/bibliotheque/gestion_bibliotheque/application/usecase/GestionMembreUseCase.java
-        return membre.peutEmprunter(nombreEmpruntsEnCours);
-=======
 
         // ✅ Logique métier déplacée ICI
         return nombreEmpruntsEnCours < membre.getQuotaEmprunt();
->>>>>>> koussaila:src/main/java/com/bibliotheque/gestion_bibliotheque/application/service/MembreService.java
     }
 
     // === MÉTHODE MÉTIER: Obtenir le quota d'un membre ===
