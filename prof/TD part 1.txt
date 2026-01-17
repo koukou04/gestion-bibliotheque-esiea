@@ -1,0 +1,328 @@
+Architecture d’application « TD »
+KAWTAR LAHMINI
+IT ARCHITECT
+@LINKEDIN
+Objectifs
+• Réaliser les architectures fonctionnelle, applicative et technique d'une application de vente en ligne de
+matériels IT. • Comprendre et appliquer les concepts de la Clean Architecture. • Modéliser et développer une plateforme backend structurée. • Exposer des APIs REST bien documentées. • Tester et valider les fonctionnalités clés de la plateforme.
+Thème
+Développement d'un backend en Java avec Spring Boot en Clean Architecture pour une plateforme de
+vente de produits IT en ligne.
+Context
+L'entreprise Easy-IT, spécialisée dans la vente de matériels informatiques, souhaite élargir ses canaux de
+vente en se tournant vers les solutions numériques. L'objectif est de proposer : • Un site web e-commerce permettant aux clients de consulter et d'acheter des produits. • Une application de gestion de commandes et de clients destinée aux vendeurs.
+Ces nouvelles applications devront permettre : • La mise en œuvre rapide de nouvelles fonctionnalités pour répondre aux exigences des clients. • Une architecture sécurisée et résiliente adaptée aux besoins de l'entreprise.
+Agenda
+08/01/2024 KAWTAR LAHMINI - ARCHITECTURE D'APPLICATION ESIEA 51. Introduction à l’architecture Fonctionnelle
+2. Introduction à l'architecture Applicative
+3. Introduction à l'architecture Technique
+4. Mise en place du projet
+5. Implémentation des entités et des use cases
+6. Implémentation des adapters
+7. Documentation Swagger
+8. Tests des APIs
+9. Extensions possibles
+1. Introduction à l’architecture fonctionnelle
+L'entreprise Easy-IT souhaite développer une plateforme de vente en ligne pour élargir ses activités. Pour ce faire, nous devons identifier les grandes fonctionnalités de cette application et organiser leur interaction. • Listez les principales fonctionnalités nécessaires pour une plateforme de vente en ligne. • Décrivez brièvement le rôle de chaque fonctionnalité (par exemple : gestion des
+produits, gestion des commandes, gestion des utilisateurs).
+Identification des blocs
+fonctionnels
+1
+Réalisez un diagramme représentant les interactions entre les blocs fonctionnels que vous avez identifiés. Par exemple, montrez comment un utilisateur interagit avec le système pour passer une commande.
+1.Modélisation
+fonctionnelle
+2
+En groupe, discutez et finalisez une version complète des blocs fonctionnels et du
+diagramme.
+Atelier pratique
+Livrables attendus
+1. Une liste des blocs fonctionnels accompagnée de leur description.
+2. Un diagramme clair montrant les interactions entre les blocs fonctionnels.
+1. Liste des blocs fonctionnels avec description
+Voici les blocs fonctionnels à inclure dans l'application :
+1.Gestion des Produits :
+1. Ajouter, modifier ou supprimer des produits et leurs catégories.
+2. Gestion des promotions et des stocks.
+2.Gestion des Utilisateurs :
+1. Inscription et authentification des clients.
+2. Gestion des profils utilisateurs.
+3.Gestion des Commandes :
+1. Suivi des paniers.
+2. Validation des commandes et suivi des livraisons.
+4.Recherche et Filtrage :
+1. Recherche par mots-clés.
+2. Filtrage par catégories, prix ou promotions.
+5.Paiements :
+1. Intégration de systèmes de paiement (Stripe, PayPal, etc.).
+2. Traitement des remboursements.
+6.Support Client :
+1. Chat en ligne ou FAQ.
+2. Gestion des réclamations via un système de tickets.
+7.Reporting et Analyse :
+1. Statistiques de ventes.
+2. Analyse des comportements des utilisateurs.
+2 - Diagramme clair montrant les - interactions entre les blocs -
+fonctionnels.
+Le diagramme représentant les
+interactions entre les blocs
+fonctionnels de la plateforme Easy-IT.
+Chaque bloc (comme "Gestion des
+Produits", "Paiements", etc.) est
+interconnecté pour montrer leurs
+relations et le flux d'informations
+dans le système.
+2 - Introduction à l’architecture d’application
+L'entreprise Easy-IT souhaite développer son backend selon une architecture propre et bien organisée pour faciliter l'évolution de sa plateforme. Pour cela, nous allons concevoir une architecture d'application basée sur les principes de la Clean Architecture.
+Identifiez les différentes couches nécessaires dans le projet : • Entities : Les objets métier (produits, commandes, utilisateurs). • Use Cases : La logique métier propre à l'application (ex. ajouter un produit, passer une
+commande). • Interface Adapters : Les contrôleurs REST, les implémentations des interfaces pour les bases de données, etc. • Frameworks & Drivers : L'infrastructure technique (Spring Boot, JPA, Swagger).
+Comprendre les couches de la
+Clean Architecture
+1
+• Réalisez un diagramme simplifié montrant les interactions entre les couches. • Expliquez comment chaque couche contribue à répondre aux besoins fonctionnels identifiés.
+2 Schéma de Clean Architecture
+Travaillez en groupe pour adapter ce modèle au contexte de Easy-IT. Définissez les principaux éléments de chaque couche (par exemple, les entités clés, les cas d'utilisation).
+Atelier pratique
+Livrables attendus
+1. Une description des rôles des différentes couches dans le projet.
+2. Un schéma représentant la Clean Architecture appliquée à la plateforme.
+3. Une liste des principales entités et cas d'utilisation.
+Architecture Application
+Front Client
+Front
+Vendeur/Gestionnaire
+Backend
+Postrey
+Client
+Vendeur
+Post inscription
+API
+S’inscrire
+Post inscription
+Paypal
+API
+Architecture Applicatif (Exemple)
+Une description des rôles des différentes couches dans le projet. • Entities (Entités) :
+Représentent les objets métier fondamentaux (produits, commandes, utilisateurs).
+Contiennent uniquement les propriétés et comportements essentiels sans dépendre de la logique métier ou de l’infrastructure.• Use Cases :
+Définissent les règles métier spécifiques à l'application.
+Exemples :
+Ajouter un produit au catalogue, passer une commande, calculer un prix.
+Interagissent avec les entités et orchestrent les différentes étapes des processus. • Interface Adapters :
+Rôle : Connecter les use cases avec le monde extérieur.
+Exemples :
+Contrôleurs REST pour exposer les API.
+Mappers pour convertir les données entre modèles internes et externes.
+Implémentations des interfaces pour interagir avec les bases de données. • Frameworks & Drivers :
+Rôle : Infrastructure technique (exécution des contrôleurs, base de données, outils).
+Exemples : Spring Boot pour les API REST, JPA pour l’accès aux données, Swagger pour la documentation.
+Une liste des principales entités et cas d'utilisation.
+Entités : • Produit : ID, nom, description, prix, stock, catégorie. • Commande : ID, utilisateur, produits commandés, date, statut. • Utilisateur : ID, nom, email, adresse, rôle.
+Cas d’utilisation :
+• Ajouter un produit au catalogue.
+• Passer une commande.
+• Authentification et gestion des utilisateurs.
+• Suivre une commande.
+• Consulter et filtrer des produits.
+Un schéma représentant la Clean Architecture appliquée à la plateforme.
+Un schéma circulaire où : •Le centre représente les Entities. •Autour, les Use Cases. •Puis, les Interface Adapters. •Enfin, la périphérie est constituée de
+Frameworks & Drivers.
+3 - Introduction à l’architecture technique
+Pour garantir la stabilité et l’efficacité de la plateforme de vente en ligne Easy-IT, il est essentiel de définir une architecture technique claire. Cette architecture permettra de choisir et de positionner les composants techniques nécessaires pour répondre aux exigences fonctionnelles et
+applicatives.
+1. Listez les composants techniques nécessaires pour implémenter la plateforme (ex. Spring Boot pour le serveur d’application, H2 ou PostgreSQL pour la base de données, Swagger pour la
+documentation API).
+2. Associez chaque composant à son rôle dans le système (ex. stockage des données, gestion des requêtes HTTP, sécurité).
+Identification des composants
+techniques
+1
+1. Créez un diagramme technique montrant les interactions entre les composants (ex. contrôleur REST → service → repository → base de données).
+2. Incluez des flèches indiquant les flux de données et d’interaction.
+Réalisation d’un diagramme
+technique
+2
+Travaillez en groupe pour définir les outils et technologies spécifiques à chaque composant (ex.
+PostgreSQL pour la base de données, Spring Security pour la sécurité).
+Atelier pratique
+Livrables attendus
+1. Une liste des composants techniques nécessaires avec leur rôle détaillé.
+2. Un diagramme technique illustrant les interactions entre les composants.
+3. Une justification des choix technologiques proposés.
+Une liste des composants techniques nécessaires avec leur rôle détaillé
+Composant Technique Rôle
+Serveur d'application pour gérer les requêtes HTTP et la logique
+métier. Spring Boot
+Swagger Documentation interactive des API REST exposées.
+JWT (JSON Web Tokens) Gestion de l'authentification et de la sécurité.
+NGINX Serveur web pour distribuer le frontend (React).
+React Interface utilisateur dynamique et réactive.
+JPA (Hibernate) Gestion de la persistance et mapping objet-relationnel (ORM).
+Docker Conteneurisation des services pour simplifier le déploiement.
+Maven ou Gradle Gestion des dépendances et construction de l'application.
+Un diagramme technique illustrant les interactions entre les composants
+Une justification des choix technologiques proposés.
+1. Spring Boot : Framework robuste et rapide à mettre en œuvre pour les applications REST.
+2. PostgreSQL : Base de données relationnelle fiable et open source pour la gestion des
+données complexes.
+3. Swagger : Simplifie le test et la documentation des API pour les développeurs.
+4. React : Crée des interfaces modernes et dynamiques, idéales pour une application en ligne.
+5. Docker : Assure la portabilité et facilite le déploiement en production.
+6. NGINX : Léger et performant pour servir les fichiers frontend et gérer le reverse proxy.
+4 - Mise en place du projet • Accédez à Spring Initializr. • Configurez les dépendances nécessaires : • Spring Web : Pour créer des APIs REST. • Spring Data JPA : Pour gérer les interactions avec la base de données. • H2 Database : Une base de données embarquée pour les tests. • Lombok : Pour simplifier le code (annotations @Getter, @Setter, etc.). • Spring REST Docs : Pour documenter les APIs avec Swagger. • Générez le projet et ouvrez-le dans un IDE (comme IntelliJ IDEA).
+1 Création du projet Spring Boot
+Créez les packages suivants : • domain : Contiendra les entités et interfaces principales. • usecase : Contiendra la logique métier (cas d’utilisation). • adapters : Inclura les contrôleurs REST et les implémentations des repositories. • frameworks : Contiendra les configurations spécifiques à Spring Boot.
+Organisation des packages
+selon la Clean Architecture
+2
+• Créez une entité simple (par exemple, Product avec des attributs comme id, name, description, price).• Implémentez un repository JPA pour l’entité Product. • Testez l’application en lançant le serveur Spring Boot.
+Initialisation des fichiers
+principaux
+3
+Livrables attendus
+1. Un projet Spring Boot fonctionnel avec une structure de packages respectant la Clean Architecture.
+2. Une entité Product avec un repository JPA opérationnel.
+5 - Implémentation des entités et des use cases
+Après avoir mis en place le projet, l’objectif est de commencer à implémenter les entités métier et les cas d’utilisation qui représentent la logique métier de la plateforme de vente en ligne. • Identifiez les entités nécessaires pour le projet (par exemple, Product, User, Order). • Implémentez une entité Product avec les attributs suivants : • id (Long) • name (String) • description (String) • price (Double)
+1 Création des entités métier
+Dans le package domain, créez une interface ProductRepository avec les méthodes suivantes : • Product save(Product product) • Optional<Product> findById(Long id) • List<Product> findAll()
+Création d’une interface de
+repository
+2
+Implémentation d’un cas Créez un use case AddProductUseCase dans le package usecase. Ce use case doit permettre d’ajouter un produit au catalogued’utilisation
+3
+Travaillez en groupe pour définir d’autres cas d’utilisation, comme : • Consulter un produit par son ID. • Lister tous les produits disponibles.
+Atelier pratique
+Livrables attendus
+1. Une entité Product avec ses attributs et ses méthodes.
+2. Une interface ProductRepository définissant les méthodes nécessaires.
+3. Une classe AddProductUseCase implémentant un cas d’utilisation.
+4. Une liste des cas d’utilisation supplémentaires identifiés.
+6 - Implémentation des adapters
+Les adapters jouent un rôle crucial dans la Clean Architecture, car ils permettent de connecter la logique métier (use cases) avec les frameworks et drivers externes. Dans cette section, l'objectif est d'implémenter des adapters pour interagir avec les bases de données (via JPA) et pour exposer les fonctionnalités à travers des APIs REST. • Dans le package adapters, implémentez une classe JpaProductRepository qui étend une interface Spring Data JPA. • Dans adapters, créez une classe ProductRepositoryAdapter pour connecter JpaProductRepository avec l'interface métier ProductRepository
+Création d'une implémentation JPA
+du repository
+1
+2 Création du contrôleur REST Dans le package adapters, implémentez un contrôleur REST qui expose les fonctionnalités via des endpoints HTTP.
+Travaillez en groupe pour étendre les fonctionnalités : • Implémentez un endpoint pour lister tous les produits. • Ajoutez un endpoint pour supprimer un produit par son ID.
+Atelier pratique
+Livrables attendus
+Une implémentation JPA fonctionnelle du repository.
+Un adapter ProductRepositoryAdapter qui connecte la logique métier avec la base de données.
+Un contrôleur REST exposant au moins deux endpoints fonctionnels (POST /products, GET /products/{id}).
+Cette couche contient la logique métier pure et les interfaces abstraites. • model/ :
+Représente le modèle métier (domaine).
+C’est une simple classe Java avec les attributs nécessaires : id, customerName, productName, et quantity.
+Elle est indépendante de toute infrastructure ou technologie. • repository/ :
+Interface qui définit les méthodes nécessaires pour gérer les commandes dans le domaine.
+Exemple : save(Order order), findAll(), findById(Long id).
+Elle est indépendante des détails de persistance. Ces détails seront implémentés dans la couche infrastructure.
+Couche domain/ (Le cœur du
+projet)
+1
+Cette couche orchestre les règles métier définies dans le domaine. Elle s’assure que les cas d’utilisation sont exécutés correctement.dto/ :
+OrderDto : Objet utilisé pour transférer les données entre la couche interfaces (par exemple, un Controller) et les services métier.Exemple : Lorsqu’une requête POST arrive, un OrderDto est utilisé pour capturer les données envoyées par l'utilisateur.
+service/ :
+OrderService : Fournit des méthodes métier spécifiques pour gérer les commandes (par exemple, création, recherche, etc.).
+Utilise le OrderRepository défini dans le domaine pour effectuer les opérations sur les commandes.
+Cette couche est indépendante de la persistance ou de la présentation.
+Couche application/ (Cas
+d’utilisation)
+2
+Cette couche contient tout ce qui est lié à l’interaction avec l’extérieur, comme les contrôleurs exposant des APIs REST.
+controller/ :
+OrderController : Contrôleur REST qui gère les requêtes HTTP (par exemple, POST, GET).
+Exemple : /api/orders pour créer ou lister les commandes.
+Il utilise les DTOs pour communiquer avec les clients et appelle les services métier pour exécuter la logique.
+Couche interfaces/
+(Entrée/Sortie)
+3
+Cette couche contient tous les détails techniques nécessaires, comme la persistance des données ou les mappers.
+entity/ :
+OrderEntity : Représente l'entité persistante utilisée par JPA (ou Hibernate).
+C’est une classe annotée avec @Entity pour mapper la commande à une table de base de données.
+Exemple : Une table SQL orders est créée pour stocker les données.
+repository/ :
+JpaOrderRepository : Implémentation concrète de l’interface OrderRepository.
+Utilise Spring Data JPA pour communiquer avec la base de données.
+Traduit les modèles métier (Order) en entités persistantes (OrderEntity) grâce à un mapper.
+mapper/ :
+OrderMapper : Contient des méthodes statiques pour convertir les entités JPA (OrderEntity) en modèles métier (Order) et vice versa.Sépare clairement la couche métier (domaine) des détails de persistance.
+4 Couche infrastructure
+7 - Documentation Swagger
+Swagger (via Springdoc OpenAPI) est un outil essentiel pour documenter et tester facilement les APIs REST. L’objectif de cette section est de configurer Swagger dans le projet Spring Boot et de valider la documentation des endpoints disponibles. Ajout de la dépendance Springdoc Ajoutez la dépendance suivante au fichier pom.xml
+OpenAPI
+1
+2 Configuration de Swagger Dans la classe principale de l'application (Application), ajoutez une annotation pour définir les métadonnées de l'API • Lancez l'application Spring Boot. • Accédez à l'interface Swagger via l'URL suivante :
+http://localhost:8080/swagger-ui.html.
+Accéder à la documentation
+Swagger
+3
+Travaillez en groupe pour enrichir la documentation : • Ajoutez des descriptions détaillées pour chaque endpoint (via des annotations comme @Operation et
+@ApiResponse). • Incluez des exemples de requêtes et de réponses pour chaque endpoint.
+Atelier pratique
+Livrables attendus
+• Une documentation Swagger accessible depuis l'interface utilisateur. • Des endpoints bien documentés avec des descriptions et des exemples. • Des tests fonctionnels réalisés via Swagger pour valider les endpoints.
+8 - Tests des APIs
+Tester les APIs est une étape essentielle pour garantir leur bon fonctionnement et leur conformité aux spécifications. Dans cette section, nous allons tester les endpoints REST exposés par votre application à l'aide de Swagger et/ou Postman. • Accédez à l'interface Swagger générée (par défaut : http://localhost:8080/swagger-ui.html). • Identifiez les endpoints disponibles (ex. POST /products, GET /products/{id}, etc.). • Pour chaque endpoint : • Envoyez des requêtes avec des données valides et vérifiez les réponses. • Testez également des scénarios avec des données invalides pour valider la gestion des erreurs.1 Test des endpoints via Swagger • Créez une collection Postman regroupant tous les endpoints de l'application. • Configurez des requêtes HTTP pour chaque endpoint, en définissant : • Méthode (GET, POST, PUT, DELETE). • URL et paramètres. • Corps de la requête (pour les endpoints POST/PUT). • Testez les réponses et vérifiez les codes de statut HTTP (200, 201, 404, 400, etc.).
+Test des endpoints via
+Postman
+2
+• Travaillez en groupe pour définir des scénarios de test plus complexes, comme : • Créer un produit, puis le récupérer par son ID. • Lister tous les produits après plusieurs insertions. • Tenter de récupérer un produit inexistant.
+Atelier pratique
+Livrables attendus
+• Une capture d'écran ou un rapport montrant les résultats des tests via Swagger et Postman. • Une liste de scénarios de test avec les résultats attendus et obtenus. • Une capture d'écran des données dans la console H2 pour valider les opérations CRUD.
+Extensions possibles
+Les extensions permettent d'enrichir l'application en ajoutant de nouvelles fonctionnalités ou en améliorant celles existantes. Cette section propose deux axes principaux : implémenter de nouveaux cas d'utilisation et gérer les erreurs de manière robuste.
+Identifiez des fonctionnalités supplémentaires pour améliorer l'application (exemples) :Gestion du panier :
+Ajouter un produit au panier.
+Supprimer un produit du panier.
+Afficher le contenu du panier avec le total.
+Gestion des utilisateurs :
+Création d'un compte utilisateur.
+Connexion avec authentification (email/mot de passe).
+Mise à jour des informations personnelles.
+Implémentez au moins un de ces nouveaux cas d'utilisation dans le package usecase :Par exemple, créez un AddToCartUseCase qui permet d'ajouter un produit au panier.
+1 Ajout de nouveaux cas d'utilisation
+Ajoutez une gestion robuste des erreurs dans vos contrôleurs REST. Par exemple :
+Retourner un code 400 (Bad Request) si les données d'entrée sont invalides.
+Retourner un code 404 (Not Found) si une ressource demandée est introuvable.
+Implémentez des validations sur les entrées utilisateur avec les annotations de validation Spring Boot (ex. @NotNull, @Size, @Email) :Exemples :
+Valider que le prix d’un produit est positif.
+Vérifier que l'email d'un utilisateur respecte le format attendu.
+Centralisez la gestion des exceptions à l'aide de la classe @ControllerAdvice.
+Gestion des erreurs et validation des
+entrées utilisateur
+2
+Travaillez en groupe pour discuter et prioriser les extensions à implémenter.
+Proposez une solution technique pour chaque fonctionnalité ou amélioration identifiée.
+Atelier pratique
+Livrables attendus
+Un ou plusieurs nouveaux cas d'utilisation ajoutés dans l'application.
+Une gestion des erreurs améliorée dans les contrôleurs REST.
+Une capture d'écran ou un rapport montrant les validations et les codes d'erreur fonctionnant correctement.
+Intégration de architecture EDA
+1 - Analyser les besoins des nouvelles fonctionnalités
+Identifier les cas d’utilisation où l’EDA peut apporter une valeur ajoutée : • Traitement asynchrone (e.g., notification par email après une action utilisateur). • Découplage des services (e.g., mise à jour d’un autre système en réponse à un événement). • Évolutivité (e.g., traitement par batch pour des tâches lourdes).
+2 - Configurer un Broker de Messages
+Choisissez une technologie adaptée : • Kafka : Pour une scalabilité et des volumes élevés. • RabbitMQ : Plus léger et facile à configurer pour de petites applications.
+Ajouter la dépendance correspondante dans Pom:
+Intégration de architecture EDA
+3 - Ajouter la configuration dans application.properties ou application.yml :
+Exemple pour Kafka :
+Intégration de architecture EDA
+Domain
+• model : Modèles métier purs sans dépendances externes. • event : Définit les événements métier (immutables). • repository : Interfaces pour la persistance métier (optionnel, si abstraction nécessaire).Application
+• usecase : Cas d’utilisation orchestrant la logique métier. • event : Gestion des événements déclenchés ou reçus. • command : Objets représentant les actions utilisateur ou système (entrée des use cases).Infrastructure
+• Controllers : Points d’entrée REST pour interagir avec l’application. • messaging : Publie ou consomme des messages via des systèmes comme Kafka ou RabbitMQ. • persistence : Implémentations concrètes des repositories (interactions avec la base de données). • config : (Optionnel) Configuration des outils tiers (Swagger, Kafka, JPA).
+Shared
+• dto : Objets de transfert entre les couches, souvent utilisés dans les API REST.• exception : Gestion centralisée des exceptions (communes ou spécifiques).• util : Classes utilitaires partagées entre plusieurs couches.
+Intégration de architecture EDA
+4 - Créer les Classes d’Événements
+Définissez les événements que vous souhaitez émettre.
+Exemple :.
+Intégration de architecture EDA
+Ajouter un Producteur d’Événements
+Créez une classe Spring Service pour publier des événements.
+Exemple avec Kafka :
+Intégration de architecture EDA
+Identifiez les endroits où des événements doivent être émis, par exemple après la création d’une ressource. Exemple : API existante
+pour créer un utilisateur :

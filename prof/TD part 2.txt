@@ -1,0 +1,229 @@
+Architecture d’application « Projet Part 2»
+KAWTAR LAHMINI
+IT ARCHITECT
+@LINKEDIN
+Introduction
+Ce document présente un mini-projet complet permettant de gérer des clients (création, lecture, listing, suppression)
+en utilisant Java Spring Boot et la Clean Architecture.
+L’objectif est d’apprendre à structurer un projet backend propre, maintenable et conforme aux bonnes pratiques
+professionnelles.
+CONTEXTE DU PROJET
+Vous travaillez en binôme. Votre mission est de concevoir et développer une application backend complète en Spring Boot, structurée
+selon la Clean Architecture, exposant ses fonctionnalités via une API REST documentée, et intégrant une architecture événementielle
+(EDA) basée sur Kafka.
+Choix du domaine applicatif
+Chaque binôme choisit librement une idée d’application.
+Cas d’usage et fonctionnalités à développer
+Chaque binôme doit :
+• Définir au minimum 4 cas d’usage métier (2 par personne).
+• Développer au minimum 4 endpoints REST (2 par personne).
+• Chaque endpoint doit correspondre à un cas d’usage.
+Architecture événementielle (EDA)
+Chaque binôme doit développer :
+Un use case producteur d’événement Kafka.
+Un use case consommateur d’événement Kafka.
+CONTEXTE DU PROJET
+CONTRAINTES OBLIGATOIRES
+• Respect strict de la Clean Architecture (domain, usecase, adapters, infrastructure).
+• Use cases indépendants de Spring (pas d’annotations Spring dans le métier).
+• Base de données H2 pour le développement.
+• API REST documentée avec Swagger / Springdoc.
+• Kafka réellement utilisé (production + consommation).
+• Travail en binôme avec répartition claire du travail.
+• Chaque étudiant développe au moins deux fonctionnalités complètes.
+Clean Architecture : principes
+La Clean Architecture sépare le code en couches indépendantes.
+Le principe fondamental est : Le métier ne doit jamais dépendre de la technique.
+Cela permet de :
+• changer la base de données sans toucher au métier
+• tester facilement les règles métier
+• organiser le code de manière claire
+Les quatre couches
+• Domain : le métier, les règles, les modèles
+• Application : les Use Cases (actions du système)
+• Infrastructure : la technique (JPA, DB, mappers)
+• API : les contrôleurs REST
+Mise en place du projet
+Accédez à Spring Initializr.
+Configurez les dépendances nécessaires :
+• Spring Web : Pour créer des APIs REST.
+• Spring Data JPA : Pour gérer les interactions avec la base de données.
+• H2 Database : Une base de données embarquée pour les tests.
+• Lombok : Pour simplifier le code (annotations @Getter, @Setter, etc.).
+• Spring REST Docs : Pour documenter les APIs avec Swagger.
+• Générez le projet et ouvrez-le dans un IDE (comme IntelliJ IDEA).
+Mise en place du projet
+Organisation des packages selon la Clean Architecture
+Créez les packages suivants :
+• domain : Contiendra les entités et interfaces principales.
+• usecase : Contiendra la logique métier (cas d’utilisation).
+• adapters : Inclura les contrôleurs REST et les implémentations des repositories.
+• frameworks : Contiendra les configurations spécifiques à Spring Boot.
+Domain Layer
+Modèle métier
+Le modèle métier représente l’objet principal du système. Il ne contient aucune annotation Spring ou JPA.
+Exemple : Customer
+Exercice – Modèle métier
+Créez votre propre modèle métier en remplaçant “Customer” par votre sujet.
+Exemples : Product, Student, Order, Book. Votre classe doit contenir au moins 3 attributs.
+Interface Repository
+L’interface repository décrit ce que le système doit pouvoir faire avec l’entité. Elle ne dit pas comment
+c’est fait.
+Exemple : CustomerRepository.java
+Exercice – Repository métier
+Créez l’interface repository pour votre modèle métier avec les méthodes :
+save
+findById
+findAll
+delete
+Domain Service
+Un Domain Service contient des règles métier. Il ne dépend d’aucune technologie.
+Exemple : CustomerValidator
+Exercice – Domain Service
+Créez un service métier qui valide votre entité.
+Exemples :
+• un produit doit avoir un prix positif
+• un étudiant doit avoir un email valide
+• une commande doit avoir une date valide
+Application Layer (Use Cases)
+Create Use Case
+Un Use Case orchestre une action métier :
+• il valide
+• il crée l’objet
+• il appelle le repository
+Exemple : CreateCustomerUseCase
+Exercice – Create Use Case
+Créez un Use Case permettant de créer votre entité. Il doit :
+• appeler votre Domain Service
+• créer l’objet métier
+• appeler le repository
+Application Layer (Use Cases)
+GetById Use Case
+Exemple : GetCustomerByIdUseCase
+Exercice – GetById Use Case
+Créez un Use Case permettant de récupérer votre entité par son ID.
+Application Layer (Use Cases)
+GetAll Use Case
+Exemple : GetAllCustomersUseCase
+Exercice – GetAll Use Case
+Créez un Use Case permettant de lister toutes vos entités.
+Application Layer (Use Cases)
+Delete Use Case
+Exemple : DeleteCustomerUseCase
+Exercice – Delete Use Case
+Créez un Use Case permettant de supprimer votre entité par son ID.
+Infrastructure Layer
+Entity JPA
+L’entité JPA représente l’objet dans la base de données.
+Exemple : CustomerEntity
+Exercice – Entity JPA
+Créez l’entité JPA correspondant à votre modèle métier.
+Infrastructure Layer
+Repository JPA
+Exemple : JpaCustomerRepository
+Exercice – Repository JPA
+Créez votre interface Spring Data JPA.
+Infrastructure Layer
+Mapper Domain Entity
+Exemple : CustomerMapper
+Exercice – Mapper
+Créez un mapper permettant de convertir :
+entité JPA → modèle métier
+modèle métier → entité JPA
+API Layer (REST)
+CustomerController
+Exemple : CustomerController
+Exercice – Controller REST
+Créez un contrôleur REST contenant au minimum :
+POST /your-entity
+GET /your-entity/{id}
+GET /your-entity
+DELETE /your-entity/{id}
+Chaque endpoint doit appeler le Use Case
+correspondant.
+API Layer (REST)
+Documentation API
+Documenter une API REST est indispensable pour :
+• permettre aux autres développeurs de comprendre comment l’utiliser
+• faciliter les tests et l’intégration
+• rendre le projet professionnel
+• éviter les malentendus sur les formats de requêtes et réponses
+La documentation peut être :
+• manuelle (README, PDF, tableau de routes)
+• automatique via Swagger / OpenAPI
+Swagger est la solution la plus utilisée car il :
+• génère une interface graphique
+• permet de tester les endpoints
+• décrit les paramètres, réponses, erreurs
+• s’intègre facilement à Spring Boot
+API Layer (REST)
+Exemple : Configuration Swagger
+Exercice – Documenter votre API
+Pour chacune de vos deux fonctionnalités :
+• Ajoutez une configuration Swagger.
+• Donnez un titre et une description à votre API.
+• Vérifiez que vos endpoints apparaissent dans Swagger UI.
+DTO (Data Transfer Object)
+Un DTO est un objet utilisé pour échanger des données entre l’API et l’application. Il permet de :
+• protéger le modèle métier
+• contrôler les données reçues
+• structurer les réponses envoyées
+• éviter d’exposer des champs sensibles
+• faciliter la documentation de l’API
+On utilise généralement :
+RequestDTO → ce que le client envoie
+ResponseDTO → ce que l’API renvoie
+Le modèle métier ne doit jamais être exposé directement dans l’API.
+DTO (Data Transfer Object)
+Exemple : DTO Customer
+CustomerRequestDTO
+CustomerResponseDTO
+DTO (Data Transfer Object)
+Exemple : Contrôleur utilisant des DTO
+Exercice – Implémenter des DTO pour votre entité
+Pour chacune de vos deux fonctionnalités :
+• Créez un RequestDTO
+• Créez un ResponseDTO
+• Modifiez votre contrôleur pour utiliser les DTO
+• Vérifiez que votre API n’expose plus votre modèle métier
+Gestion des erreurs
+Une API professionnelle doit renvoyer :
+• des messages d’erreur clairs
+• des codes HTTP cohérents
+• une structure de réponse uniforme
+Sans gestion d’erreurs, l’API renvoie des erreurs techniques incompréhensibles.
+Pour cela, on utilise :
+• des exceptions personnalisées
+• un handler global avec @RestControllerAdvice
+Cela permet :
+• d’éviter les erreurs non contrôlées
+• d’envoyer des réponses propres au format JSON
+• d’améliorer l’expérience des utilisateurs de l’API
+Gestion des erreurs
+Exemple : Exception personnalisée
+Exemple : Handler global
+Gestion des erreurs
+Exercice – Implémenter la gestion d’erreurs
+Pour chacune de vos deux fonctionnalités :
+• Créez une exception personnalisée (ex : YourEntityNotFoundException).
+• Créez un handler global avec @RestControllerAdvice.
+• Renvoyez un message JSON propre en cas d’erreur.
+• Utilisez les bons codes HTTP (404, 400, etc.).
+Exercice final : Construire votre
+mini-projet complet
+En utilisant tous les exercices précédents, construisez un mini-projet complet en Clean Architecture sur le sujet de votre choix.
+Chaque étudiant doit développer 2 fonctionnalités métier complètes, par exemple :
+• Gestion des Clients (create, update, delete, getById, getAll)
+• Gestion des Produits (create, update, delete, getById, getAll)
+• Gestion des Étudiants
+• Gestion des Commandes
+• Gestion des Réservations
+Une fonctionnalité = un module métier complet, comprenant toutes les opérations nécessaires (create, update, delete, getById,
+getAll).
+Exemple : Gestion Client La fonctionnalité “Gestion Client” contient :
+• créer un client
+• modifier un client
+• supprimer un client
+• récupérer un client par ID
+• lister tous les clients
+Chaque étudiant doit donc choisir 2 modules métier et implémenter chacun de bout en bout.

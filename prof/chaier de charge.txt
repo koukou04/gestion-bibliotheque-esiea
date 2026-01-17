@@ -1,0 +1,636 @@
+Architecture d'Application - Gestion de Bibliothèque  
+
+Contexte 
+
+L'application de gestion de bibliothèque personnelle vise à permettre aux utilisateurs de gérer efficacement leur collection de livres, de faciliter les prêts, et d'organiser leurs lectures. Cette application doit offrir une solution simple et intuitive pour : 
+
+Gérer un catalogue personnel de livres (ajout, modification, suppression) 
+
+Faciliter le prêt de livres entre utilisateurs avec suivi des dates 
+
+Permettre la recherche et le filtrage de livres dans la collection 
+
+Suivre l'état de lecture de chaque livre (lu, en cours, à lire) 
+
+Partager des recommandations entre utilisateurs 
+
+L'objectif est de créer une plateforme qui simplifie la gestion de bibliothèques personnelles tout en favorisant le partage de livres entre amis et passionnés de lecture. 
+
+ 
+
+Liste des blocs fonctionnels avec description 
+
+Voici les blocs fonctionnels à inclure dans l'application de gestion de bibliothèque : 
+
+Gestion des Livres 
+
+Ajouter, modifier ou supprimer des livres avec calcul automatique de la disponibilité (titre, auteur, ISBN, éditeur, année de publication, nombre d'exemplaires) 
+
+Gestion des catégories (fiction, sciences, histoire, art, etc.) et des stocks disponibles 
+
+Suivi de l'état physique des livres (neuf, bon état, abîmé, perdu) 
+
+Gestion des Membres 
+
+Inscription et authentification des membres (via email universitaire ou carte bibliothèque) 
+
+Gestion des profils utilisateurs (coordonnées, type de membre, historique d'emprunts, score de fiabilité) 
+
+Attribution de quotas d'emprunt selon le type de membre (étudiant : 5 livres, enseignant : 10 livres, personnel : 7 livres) 
+
+Gestion des Emprunts 
+
+Création d'emprunts avec calcul automatique de la date de retour (selon le type de membre et le score) 
+
+Suivi des emprunts en cours, retours et prolongations 
+
+Enregistrement des retours avec vérification de l'état du livre et calcul automatique des pénalités de retard 
+
+Recherche et Filtrage 
+
+Recherche par mots-clés (titre, auteur, ISBN), catégories ou localisation (salle, étagère) 
+
+Filtrage par disponibilité, catégorie, année de publication ou état du livre 
+
+Consultation du catalogue complet avec tri et pagination 
+
+Gestion des Réservations 
+
+Réserver un livre actuellement emprunté 
+
+File d'attente automatique pour les livres populaires 
+
+Notification quand le livre devient disponible avec délai de retrait 
+
+Score de Fiabilité 
+
+Calcul automatique du score au retour via un système de points (retour à temps : +5, retard : -10, livre abîmé : -20) 
+
+Mise à jour des scores et historique des évaluations 
+
+Avantages selon le score (durée d'emprunt prolongée, quota augmenté, priorité de réservation) 
+
+Messagerie et Notifications 
+
+Rappels automatiques 3 jours avant la date de retour 
+
+Alertes de retard par email avec montant des pénalités 
+
+Notifications push/email pour disponibilité de réservations ou confirmations d'emprunt 
+
+Reporting et Analyse 
+
+Statistiques d'emprunts par membre, par catégorie ou par période 
+
+Livres les plus empruntés, temps moyen d'emprunt, taux de retard 
+
+Analyse des tendances de lecture et recommandations personnalisées 
+
+ 
+
+2. Diagramme d'Interactions entre les Blocs Fonctionnels 
+
+ 
+
+ 
+
+ 
+
+ 
+
+  
+
+Description des Flux Principaux : 
+
+Flux d'Authentification : 
+
+L'utilisateur s'inscrit ou se connecte via "Gestion des Utilisateurs" 
+
+Accès à toutes les fonctionnalités après authentification 
+
+Flux de Gestion de Catalogue : 
+
+L'utilisateur ajoute/modifie des livres dans "Gestion du Catalogue" 
+
+Les livres deviennent disponibles pour "Recherche et Filtrage" 
+
+Les informations sont utilisées par "Suivi de Lecture" 
+
+Flux de Prêt : 
+
+L'utilisateur cherche un livre via "Recherche et Filtrage" 
+
+Crée un prêt dans "Gestion des Prêts" 
+
+Le système vérifie la disponibilité dans "Gestion du Catalogue" 
+
+"Notifications" envoie des rappels de retour 
+
+Flux de Lecture : 
+
+L'utilisateur sélectionne un livre du "Catalogue" 
+
+Enregistre sa progression dans "Suivi de Lecture" 
+
+Les données alimentent "Statistiques et Rapports" 
+
+Flux de Recommandations : 
+
+L'utilisateur note et commente via "Système de Recommandations" 
+
+Partage ses lectures avec d'autres utilisateurs 
+
+Reçoit des suggestions basées sur ses lectures 
+
+Flux de Notifications : 
+
+"Gestion des Prêts" déclenche des alertes de retour 
+
+"Système de Recommandations" notifie des nouvelles suggestions 
+
+Les alertes sont envoyées via "Notifications" 
+
+Flux d'Analyse : 
+
+Toutes les actions sont agrégées dans "Statistiques et Rapports" 
+
+L'utilisateur visualise ses habitudes de lecture 
+
+Les données aident à optimiser la gestion de la bibliothèque 
+
+ 
+
+ 
+
+ 
+
+ 
+
+1. Description des Rôles des Couches 
+
+Entities (Entités) 
+
+Objets métier : Livre, Membre, Emprunt, Réservation. Contiennent les propriétés et comportements essentiels. 
+
+Use Cases 
+
+Logique métier : Emprunter un livre, Retourner un livre, Réserver un livre, Calculer score. Orchestrent les étapes des processus métier. 
+
+Interface Adapters 
+
+Contrôleurs REST pour exposer les API 
+
+Implémentations JPA pour la base de données 
+
+Mappers pour convertir les données 
+
+Frameworks & Drivers 
+
+Infrastructure : Spring Boot, JPA, PostgreSQL, Swagger, JWT. 
+
+ 
+
+2. Schéma Clean Architecture 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Vue globale :  
+
+ 
+
+ 
+
+ 
+
+ 
+
+3. Entités et Cas d'Utilisation 
+
+Entités 
+
+Livre : id, titre, auteur, ISBN, editeur, anneePublication, categorie, nombreExemplaires, etatPhysique 
+
+Membre : id, nom, prenom, email, typeMembre, quotaEmprunt, scoreFiabilite, dateInscription 
+
+Emprunt : id, livre, membre, dateEmprunt, dateRetourPrevue, dateRetourEffective, statut, penalite 
+
+Reservation : id, livre, membre, dateReservation, statut, position 
+
+ 
+
+Cas d'Utilisation 
+
+Emprunter un livre : Vérifier quota et disponibilité, créer emprunt, calculer date retour 
+
+Retourner un livre : Vérifier état, calculer pénalités, mettre à jour score 
+
+Réserver un livre : Créer réservation, calculer position dans file d'attente 
+
+Calculer score de fiabilité : Retour à temps +5, retard -10, livre abîmé -20 
+
+Envoyer rappels : Rappel automatique 3 jours avant date de retour 
+
+Rechercher un livre : Filtrage par titre, auteur, catégorie, disponibilité 
+
+Ajouter un livre : Valider ISBN, créer livre dans catalogue 
+
+Générer statistiques : Livres les plus empruntés, taux de retard, tendances 
+
+ 
+
+ 
+
+ 
+
+ 
+
+3. Architecture Technique - Système de Gestion de Bibliothèque 
+
+1. Liste des Composants Techniques et Leurs Rôles 
+
+Frontend 
+
+Composant : Application web React ou Vue.js 
+
+ Rôle : Interface utilisateur pour les membres et bibliothécaires. Permet de rechercher des livres, emprunter, gérer les retours, consulter les statistiques. 
+
+ 
+
+Backend - API REST 
+
+Composant : Spring Boot 3.x (Java 17) 
+
+ Rôle : Expose les endpoints REST pour toutes les fonctionnalités (emprunter, retourner, réserver). Contient la logique métier en Clean Architecture. 
+
+ 
+
+Base de Données 
+
+Composant : PostgreSQL 15 
+
+ Rôle : Stocke toutes les données (livres, membres, emprunts, réservations). Gère la persistance et les transactions. 
+
+ 
+
+ORM (Mapping Objet-Relationnel) 
+
+Composant : Spring Data JPA + Hibernate 
+
+ Rôle : Convertit les objets Java (entités) en tables SQL. Génère automatiquement les requêtes SQL. 
+
+ 
+
+Documentation API 
+
+Composant : Springdoc OpenAPI (Swagger) 
+
+ Rôle : Génère automatiquement la documentation interactive de l'API REST. Permet de tester les endpoints directement. 
+
+ 
+
+Authentification 
+
+Composant : Spring Security + JWT 
+
+ Rôle : Sécurise l'API. Génère des tokens JWT pour authentifier les utilisateurs (membres et bibliothécaires). 
+
+ 
+
+Messaging 
+
+Composant : Apache Kafka + Spring Kafka 
+
+ Rôle : Gère l'envoi asynchrone des notifications (rappels de retour, alertes de retard) sans bloquer l'API principale. 
+
+ 
+
+Serveur Web 
+
+Composant : Tomcat (intégré dans Spring Boot) 
+
+ Rôle : Serveur HTTP qui exécute l'application Spring Boot et traite les requêtes REST. 
+
+ 
+
+2. Diagramme Technique 
+
+┌──────────────────────────────────────────────────────────────┐ 
+│                      UTILISATEURS                             │ 
+│          (Membres + Bibliothécaires)                         │ 
+└────────────────────┬─────────────────────────────────────────┘ 
+                     │ 
+                     │ HTTPS 
+                     ▼ 
+        ┌────────────────────────────┐ 
+        │   FRONTEND (React/Vue.js)  │ 
+        │   Port: 3000               │ 
+        └────────────┬───────────────┘ 
+                     │ 
+                     │ HTTP REST + JWT 
+                     ▼ 
+        ┌────────────────────────────┐ 
+        │   BACKEND (Spring Boot)    │ 
+        │   Port: 8080               │ 
+        │                            │ 
+        │  ┌──────────────────────┐  │ 
+        │  │ Controllers REST     │  │ 
+        │  │ (API Endpoints)      │  │ 
+        │  └──────────┬───────────┘  │ 
+        │             │               │ 
+        │  ┌──────────▼───────────┐  │ 
+        │  │ Use Cases            │  │ 
+        │  │ (Logique métier)     │  │ 
+        │  └──────────┬───────────┘  │ 
+        │             │               │ 
+        │  ┌──────────▼───────────┐  │ 
+        │  │ Entities (Domain)    │  │ 
+        │  │ Livre, Membre, etc.  │  │ 
+        │  └──────────┬───────────┘  │ 
+        │             │               │ 
+        │  ┌──────────▼───────────┐  │ 
+        │  │ JPA Repositories     │  │ 
+        │  └──────────┬───────────┘  │ 
+        │             │               │ 
+        │  ┌──────────▼───────────┐  │ 
+        │  │ Spring Security+JWT  │  │ 
+        │  └──────────────────────┘  │ 
+        └────────────┬───────────────┘ 
+                     │ 
+                     │ JDBC (SQL) 
+                     ▼ 
+        ┌────────────────────────────┐ 
+        │   PostgreSQL               │ 
+        │   Port: 5432               │ 
+        │   Tables: livre, membre,   │ 
+        │   emprunt, reservation     │ 
+        └────────────────────────────┘ 
+ 
+                     │ 
+                     │ Pub/Sub 
+                     ▼ 
+        ┌────────────────────────────┐ 
+        │   Apache Kafka             │ 
+        │   Port: 9092               │ 
+        │   Topics: rappels, alertes │ 
+        └────────────────────────────┘ 
+                     │ 
+                     ▼ 
+        ┌────────────────────────────┐ 
+        │  Service Notifications     │ 
+        │  (Envoi emails)            │ 
+        └────────────────────────────┘ 
+ 
+        ┌────────────────────────────┐ 
+        │   Swagger UI               │ 
+        │   /swagger-ui.html         │ 
+        │   (Documentation)          │ 
+        └────────────────────────────┘ 
+  
+
+Flux principal : 
+
+L'utilisateur accède au Frontend 
+
+Le Frontend envoie des requêtes HTTP REST au Backend avec un token JWT 
+
+Le Backend vérifie le token (Spring Security) 
+
+Le Backend traite la requête via les Use Cases 
+
+Le Backend accède à PostgreSQL via JPA 
+
+Le Backend publie des messages dans Kafka pour les notifications 
+
+Le Service Notifications consomme les messages et envoie les emails 
+
+ 
+
+3. Justification des Choix Technologiques 
+
+Pourquoi Spring Boot ? 
+
+Framework Java le plus utilisé en entreprise 
+
+Configuration automatique (pas de XML) 
+
+Facilite la Clean Architecture (séparation des couches) 
+
+Grande communauté et documentation 
+
+Écosystème riche (Spring Data, Spring Security, Spring Kafka) 
+
+ 
+
+Pourquoi PostgreSQL ? 
+
+Base de données relationnelle gratuite et open source 
+
+Parfait pour notre domaine (relations claires : Livre ↔ Membre ↔ Emprunt) 
+
+Gère les transactions ACID (cohérence des emprunts) 
+
+Performant pour les lectures/écritures fréquentes 
+
+Très utilisé en production 
+
+Alternative : H2 pour le développement (base en mémoire, plus rapide pour tester) 
+
+ 
+
+Pourquoi JPA/Hibernate ? 
+
+Pas besoin d'écrire du SQL manuellement 
+
+Mapping automatique entre objets Java et tables SQL 
+
+Génération automatique des repositories 
+
+Portabilité (changer de base de données facilement) 
+
+Standard Java pour l'ORM 
+
+ 
+
+Pourquoi REST API (et pas SOAP ou GraphQL) ? 
+
+Standard web simple et universel 
+
+Format JSON léger 
+
+Facile à consommer par n'importe quel frontend 
+
+Stateless (facilite la scalabilité) 
+
+HTTP standard (GET, POST, PUT, DELETE) 
+
+ 
+
+Pourquoi Swagger/OpenAPI ? 
+
+Documentation automatique générée depuis le code 
+
+Interface interactive pour tester l'API 
+
+Toujours à jour (pas de maintenance séparée) 
+
+Standard de l'industrie 
+
+Facilite le travail des développeurs frontend 
+
+ 
+
+Pourquoi JWT ? 
+
+Authentification stateless (pas de session serveur) 
+
+Token sécurisé et signé cryptographiquement 
+
+Scalable (fonctionne sur plusieurs serveurs) 
+
+Standard moderne 
+
+Contient les informations utilisateur (type, permissions) 
+
+ 
+
+Pourquoi Kafka ? 
+
+Traitement asynchrone des notifications (ne bloque pas l'API) 
+
+Messages persistés (pas de perte si un service tombe) 
+
+Scalable (peut gérer des millions de messages) 
+
+Découplage (service notifications indépendant) 
+
+Parfait pour les rappels de retour automatiques 
+
+Alternative : RabbitMQ (plus simple mais moins scalable) 
+
+ 
+
+Pourquoi React/Vue.js ? 
+
+Application SPA moderne et fluide 
+
+Composants réutilisables 
+
+Performance (Virtual DOM) 
+
+Grande communauté 
+
+Facile de consommer une API REST 
+
+ 
+
+4. Stack Technique Complète 
+
+Couche 
+
+Technologie 
+
+Version 
+
+Frontend 
+
+React ou Vue.js 
+
+18+ / 3+ 
+
+Backend 
+
+Spring Boot 
+
+3.2+ 
+
+Langage 
+
+Java 
+
+17 LTS 
+
+Base de données 
+
+PostgreSQL 
+
+15+ 
+
+ORM 
+
+Hibernate 
+
+6+ 
+
+API Docs 
+
+Springdoc OpenAPI 
+
+2.3+ 
+
+Sécurité 
+
+Spring Security + JWT 
+
+- 
+
+Messaging 
+
+Apache Kafka 
+
+3.x 
+
+Build Tool 
+
+Maven 
+
+3.8+ 
+
+Test DB 
+
+H2 
+
+2.2+ 
+
+Conteneurisation 
+
+Docker 
+
+- 
+
+ 
+
+5. Avantages de cette Architecture 
+
+✅ Modulaire : Clean Architecture permet de changer facilement les composants 
+
+ ✅ Scalable : Peut gérer une grande bibliothèque universitaire 
+
+ ✅ Testable : Chaque couche peut être testée indépendamment 
+
+ ✅ Maintenable : Code organisé et séparation des responsabilités 
+
+ ✅ Sécurisée : JWT + Spring Security + HTTPS 
+
+ ✅ Performante : Kafka pour l'asynchrone, PostgreSQL optimisé 
+
+ ✅ Standard : Technologies éprouvées en production 
+
+ ✅ Open Source : Pas de coûts de licence 
+
+ 

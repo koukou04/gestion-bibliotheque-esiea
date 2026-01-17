@@ -8,8 +8,8 @@ public class Membre {
     private String prenom;
     private String email;
     private String typeMembre; // ETUDIANT, ENSEIGNANT, PERSONNEL
-    private Integer quotaEmprunt; // 5 pour étudiant, 10 pour enseignant, 7 pour personnel
-    private Integer scoreFiabilite; // Score initial: 50
+    private Integer quotaEmprunt;
+    private Integer scoreFiabilite;
     private LocalDate dateInscription;
 
     // Constructeurs
@@ -22,11 +22,23 @@ public class Membre {
         this.email = email;
         this.typeMembre = typeMembre;
         this.dateInscription = LocalDate.now();
-        this.scoreFiabilite = 50; // Score initial
-        this.quotaEmprunt = calculerQuota(typeMembre);
+        this.scoreFiabilite = 50;
+        // ✅ On initialise le quota dans le constructeur c'est OK
+        this.quotaEmprunt = calculerQuotaInitial(typeMembre);
     }
 
-    // Getters et Setters
+    // ✅ Méthode privée helper pour l'initialisation c'est OK
+    private Integer calculerQuotaInitial(String type) {
+        switch (type.toUpperCase()) {
+            case "ETUDIANT": return 5;
+            case "ENSEIGNANT": return 10;
+            case "PERSONNEL": return 7;
+            default: return 3;
+        }
+    }
+
+    // ========== GETTERS ET SETTERS UNIQUEMENT ==========
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -42,7 +54,6 @@ public class Membre {
     public String getTypeMembre() { return typeMembre; }
     public void setTypeMembre(String typeMembre) {
         this.typeMembre = typeMembre;
-        this.quotaEmprunt = calculerQuota(typeMembre);
     }
 
     public Integer getQuotaEmprunt() { return quotaEmprunt; }
@@ -58,29 +69,5 @@ public class Membre {
     public LocalDate getDateInscription() { return dateInscription; }
     public void setDateInscription(LocalDate dateInscription) {
         this.dateInscription = dateInscription;
-    }
-
-    // Méthodes métier
-    private Integer calculerQuota(String type) {
-        switch (type.toUpperCase()) {
-            case "ETUDIANT": return 5;
-            case "ENSEIGNANT": return 10;
-            case "PERSONNEL": return 7;
-            default: return 3;
-        }
-    }
-
-    public void ajusterScore(int points) {
-        this.scoreFiabilite += points;
-        if (this.scoreFiabilite < 0) {
-            this.scoreFiabilite = 0;
-        }
-        if (this.scoreFiabilite > 100) {
-            this.scoreFiabilite = 100;
-        }
-    }
-
-    public boolean peutEmprunter(int nombreEmpruntsEnCours) {
-        return nombreEmpruntsEnCours < quotaEmprunt;
     }
 }

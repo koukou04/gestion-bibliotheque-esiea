@@ -1,7 +1,5 @@
 package com.bibliotheque.gestion_bibliotheque.application.mapper;
 
-
-
 import com.bibliotheque.gestion_bibliotheque.domain.entities.Emprunt;
 import com.bibliotheque.gestion_bibliotheque.application.dto.EmpruntDto;
 
@@ -28,18 +26,13 @@ public class EmpruntMapper {
     public static Emprunt toEntity(EmpruntDto dto) {
         if (dto == null) return null;
 
-        Emprunt emprunt = new Emprunt(
+        return new Emprunt(
                 dto.getId(),
                 dto.getLivreId(),
                 dto.getMembreId(),
                 dto.getDateEmprunt(),
                 dto.getDateRetourPrevue()
         );
-        emprunt.setDateRetourEffective(dto.getDateRetourEffective());
-        emprunt.setStatut(dto.getStatut());
-        emprunt.setPenalite(dto.getPenalite());
-
-        return emprunt;
     }
 
     public static List<EmpruntDto> toDtoList(List<Emprunt> emprunts) {

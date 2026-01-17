@@ -1,0 +1,444 @@
+Architecture d’application
+KAWTAR LAHMINI
+IT ARCHITECT
+@LINKEDIN
+Agenda
+08/01/2024 KAWTAR LAHMINI - ARCHITECTURE D'APPLICATION ESIEA 2• Session 1  Architecture : Qu’est ce que c’est?
+ Styles d’architecture Et Modèles
+d’architecture
+• Session 2
+• Principes de conception architecture
+• Session 3
+• Architecture Fonctionnelle
+• Architecture Applicative
+• Architecture technique
+• Session 4
+ Architecture Monolithique
+ Architecture En couches
+• Session 5
+ Architecture SOA
+ Architecture REST
+ API • Session 6
+ Architecture Microservices  Architecture EDA
+• Session 7
+ Documentation d’architecture
+ Démo
+Architecture : Qu’est ce que c’est?
+Les architectures logicielles sont des structures qui reflètent les cas d'utilisation du système.
+Tout comme les plans d'une maison ou d'une bibliothèque parlent des cas d'utilisation de
+ces bâtiments, l'architecture d'une application logicielle devrait également parler des cas
+d'utilisation de l'application.
+« Ivar Jacobson »
+Vue d’ensemble de l’architecture IT
+Architecture Métier
+Architecture fonctionnelle
+Architecture logicielle ou
+applicative logique
+Architecture des
+données
+Architecture technique
+Rappel du cycle de vie du développement logiciel
+Analyse des
+besoins
+Conception
+Codage
+Test
+Déploiement
+Maintenance
+Architecture
+Métier
+Architecture
+fonctionnelle
+Architecture
+logicielle ou
+applicative logique
+Architecture des
+données
+Style d'architecture Et Modèle d'architecture
+Style d'architecture Modèle d'architecture
+C’est une implémentation concrète d’un style d’architecture, adaptée à
+un contexte spécifique. Il décrit comment les composants du système
+sont structurés et interagissent.
+C’est un concept abstrait ou un guide général qui décrit
+une façon d’organiser un système. Il fournit des principes
+et des concepts sans spécifier de mise en œuvre
+particulière.
+Définition
+Mettre en œuvre un style dans un projet réel en respectant des
+contraintes techniques spécifiques.
+Proposer des solutions réutilisables pour des problèmes
+récurrents d’architecture.
+But • Un système bancaire avec une architecture en couches où la couche "données" utilise PostgreSQL, la couche "métier" utilise Spring Boot, et la couche "présentation" est construite avec Angular. • Une API REST utilisant l’architecture hexagonale (port/adaptateurs)
+avec une base MongoDB et des adaptateurs HTTP.
+• Client-Serveur : Séparation entre un client qui
+demande des services et un serveur qui les fournit. • Microservices : Organisation d’un système en
+plusieurs services indépendants, faiblement couplés. • REST : Style pour construire des API basées sur des
+principes comme l’utilisation de ressources et de
+verbes HTTP.
+Exemples
+• Le style d'architecture est une orientation ou un concept général (le quoi et pourquoi). • Le modèle d'architecture est une mise en œuvre concrète de ce style dans un contexte spécifique (le comment).
+Styles d’architecture
+« Le style d’architecture décrit la
+structure globale d’un système »
+Style d'architecture Et Modèle d'architecture - Exemples
+MVC
+CQRS
+MVC décrit une organisation spécifique des composants dans uneapplication :
+le Model (gestion des données et logique métier), laView(interface utilisateur), et le Controller (gestion des interactions etcommunication entre le Model et la View).
+CQRS repose sur un principe conceptuel : séparer les responsabilités entre
+les commandes (actions qui modifient l'état du système) et les requêtes
+(actions qui lisent des données). • Commandes : Modifier l’état du système (exemple : ajouter un produit
+au panier). • Requêtes : Lire des données sans impact sur l’état (exemple : afficher la
+liste des produits).
+Principes de conception Architecturale
+« La conception architecturale d’un logiciel est essentielle pour garantir qu'il soit clair, robuste et évolutif. Cesprincipes permettent de gérer la complexité, d'améliorer la collaboration, et de réduire les coûts de maintenance.. »Les 7 principes clés
+Séparation des préoccupations Responsabilités distinctes.
+Modularité & encapsulation Systèmes divisés en blocs indépendants.
+Abstraction & masquage Simplifier, cacher les détails.
+Couplage faible & cohésion élevée Dépendances minimales, logique claire.
+Évolutivité & performances Gérer la montée en charge efficacement.
+Flexibilité & extensibilité Ajouter des fonctionnalités sans casse.
+Réutilisabilité & maintenabilité Code durable et facile à comprendre.
+Pourquoi ?
+• Organiser les responsabilités (structure) • Réagir aux changements (adaptabilité) • Réutiliser le code (efficacité)
+1. Séparation des préoccupations
+« Ce principe consiste à diviser une application en sections distinctes, chaque section se concentrant sur une responsabilité spécifique. »
+Dans une application web, séparer la logique métier (backend) de l'interface utilisateur (frontend). Cela permet de travailler indépendamment sur chaque partie.
+Exemple
+Avantages Facilite la maintenance et réduit la complexité du code.
+2. Modularité et encapsulation
+« La modularité signifie diviser un système en parties ou modules indépendants. L'encapsulation
+consiste à regrouper les données et les comportements associés dans une unité (comme une classe) tout en cachant les détails internes.. »
+Un module d’authentification dans une application est indépendant d’un module de
+gestion des produits.
+Exemple
+Avantages Permet de réutiliser les modules et de les remplacer sans affecter le reste du système.
+3. Abstraction et Information Hiding (Masquage d’information)« L’abstraction consiste à exposer uniquement les détails essentiels d’un composant tout en masquant les détails internes.»
+Une API expose des méthodes pour effectuer des opérations, mais les détails internes de son implémentation sont cachés.
+Exemple
+Avantages Réduit la complexité et limite les dépendances entre les composants.
+4. Couplage faible et cohésion élevée
+Couplage faible : Les modules doivent avoir le moins de dépendances possibles entre eux.
+Cohésion élevée : Chaque module doit être spécialisé et axé sur une tâche unique.
+Un composant de gestion des utilisateurs ne doit pas dépendre d'un composant de
+gestion des commandes.
+Exemple
+Avantages Les systèmes deviennent plus robustes, faciles à modifier et à tester.
+5. Évolutivité et performances
+« La capacité du système à gérer une augmentation du nombre d’utilisateurs, des données ou des
+transactions tout en maintenant des performances acceptables. »
+Une application qui utilise un cache pour réduire la charge sur la base de données lors
+des requêtes fréquentes.
+Exemple
+Avantages Garantit que l’application reste performante même lorsque la charge augmente.
+6. Flexibilité et extensibilité
+« La flexibilité consiste à pouvoir adapter le système facilement aux nouveaux besoins, et l'extensibilité permet d'ajouter de nouvelles fonctionnalités sans affecter les parties existantes. »
+Ajouter un nouveau type de produit dans une application e-commerce sans modifier la structure de la base de données.
+Exemple
+Avantages Permet une évolution naturelle du système au fil du temps.
+7. Réutilisabilité et maintenabilité
+Réutilisabilité : Les composants ou modules peuvent être utilisés dans d’autres projets ou contextes.Maintenabilité : Le système peut être facilement corrigé ou mis à jour.
+Une bibliothèque de validation d’entrées utilisateur qui peut être utilisée dans plusieurs projets.
+Exemple
+Avantages Réduit les coûts de développement et simplifie la gestion du code sur le long terme
+Architecture Fonctionnelle
+« Organisation d’un système autour de fonctions clés (modules) définissant ce que le système doit faire, en mettant l'accent sur les
+besoins métier »
+• Modules indépendants : Chaque fonction a une responsabilité unique. • Focus métier : Aligné sur les objectifs opérationnels. • Interconnectivité : Les modules communiquent entre eux pour accomplir les tâches globales.
+Caractéristiques
+• Simplicité. • Modularité et réutilisation. • Maintenance facilitée.
+Avantages
+Exemple : Application de Vente de Matériels IT
+• Produits : Gérer les catégories, stock, et fiches produits. • Commandes : Panier, paiements, suivi des commandes. • Utilisateurs : Authentification, profil, historique.
+Architecture Fonctionnelle (Exemple)
+Architecture Applicative
+« Organisation d'une application en couches indépendantes, chacune ayant un rôle spécifique pour structurer les responsabilités. »
+• Interface utilisateur : Affichage et interaction avec les utilisateurs.
+Exemple : React, Bootstrap. • Logique métier : Règles, traitements et workflows.
+Exemple : Spring Boot, Node.js. • Données : Gestion et stockage des informations.
+Exemple : PostgreSQL, MongoDB. • API externes : Connexion à des services tiers (paiement, livraison).
+Exemple : Stripe, PayPal.
+Couches principales
+• Structure claire et évolutive. • Facilité de maintenance et modularité. • Réutilisation et scalabilité des composants
+Avantages
+Couches principales : • Interface utilisateur : • Frontend : React, Bootstrap. • Fonction : Affichage des produits, panier, commandes. • Logique métier : • Backend : Spring Boot ou Node.js. • Fonction : Gestion des règles métier (prix, stocks, promotions). • Données : • Base de données : PostgreSQL ou MongoDB. • Fonction : Stockage des produits, commandes, utilisateurs. • Intégrations externes : • Paiement : Stripe ou PayPal. • Livraison : DHL ou API d'expédition.
+Architecture Applicatif (Exemple)
+Architecture Technique
+« L'architecture technique décrit l’infrastructure matérielle et logicielle nécessaire pour exécuter l’application. »
+Découplage : Frontend (React) et Backend (Spring Boot).
+Scalabilité : Ajout facile de serveurs (Cloud).
+Conteneurisation : Standardisation avec Docker.
+Hébergement Cloud : AWS, Azure, ou Google Cloud.
+Sécurité : HTTPS, pare-feu, authentification sécurisée.
+Caractéristiques
+Performance : Répartition de la charge.
+Flexibilité : Mises à jour indépendantes.
+Évolutivité : Gestion de la montée en charge.
+Fiabilité : Redondance pour éviter les pannes.
+Coût : Paiement à l'usage avec le cloud.
+Avantages
+Composants principaux : • Frontend : • Serveur Web : NGINX ou Apache. • Application : React (SPA déployée). • Backend : • Serveur d'applications : Spring Boot ou Node.js. • API REST pour la communication entre Frontend et Backend. • Base de données : • SGBD : PostgreSQL ou MongoDB (hébergé sur un serveur dédié ou cloud). • Infrastructure : • Hébergement : AWS, Azure, ou Google Cloud. • Conteneurisation : Docker pour déployer les services. • Gestion du trafic : Load balancer (HAProxy).
+Architecture Technique (Exemple)
+Récapulatif Architecture Fonctionnelle Architecture Applicative Architecture TechniqueDécrit l'infrastructure matérielle et logicielle sous-jacente.
+Décrit l'organisation interne des couches de
+l'application.
+Décrit les fonctions métier principales du
+Définition système.
+Définir les outils et technologies nécessaires (Avec quoi ?).
+Organiser les responsabilités logiques
+(Comment structurer ?). Objectif Répondre aux besoins métier (Quoi faire ?).
+Centré sur l’infrastructure(serveurs, réseaux, cloud).
+Centré sur les couches logiques (UI, logique
+métier, données).
+Centré sur les services métier (ex : gestion
+des commandes). Focus
+Organisation Modules fonctionnels indépendants. Couches logiques interconnectées. Infrastructure matérielle et logicielle.Serveur web, backend, base de données, cloud, conteneurs.
+Couches : Interface uƟlisateur → Logique
+méƟer → Données.
+Gestion des commandes, des utilisateurs,
+des produits. Exemple
+Développeurs et architectes logiciels. Architectes système et ingénieurs DevOps.Analystes métier et concepteurs
+fonctionnels. Responsable
+Architecture Fonctionnelle : Répond aux besoins métier (vision utilisateur).
+Architecture Applicative : Organise la structure interne de l’application (vision développeur).
+Architecture Technique : Implémente l’infrastructure matérielle et logicielle (vision système).
+Client Commande
+Facture Produit
+Navigateur
+Application Monolithique
+Base de données
+Architecture Monolithique
+Avantages Limites
+• Evolutivité
+• Maintenabilité
+• Déploiement • Verrouillage technologique
+• Simplicité
+Front
+Back
+Base de données« L'architecture monolithique désigne une
+application construite comme un bloc unique où
+toutes les fonctionnalités (interface utilisateur,
+logique métier, accès aux données) sont étroitement
+intégrées dans un seul déploiement.»
+Architecture Monolithique
+Le point de départ : Architecture En Couches
+Organisation de l'application en couches hiérarchiques (UI, Business Logic, Data). • Simple à comprendre et à implémenter. • Séparation claire des responsabilités. • Adapté pour des projets simples et débutants
+Avantages
+• Fort couplage entre les couches. • Difficulté à évoluer ou à adapter aux nouvelles technologies.
+Inconvénients
+Exemples typiques Applications web traditionnelles (modèle MVC).
+Architecture Client-serveur – 2 tiersle programme récupérer les données
+ Client
+Client
+Serveur
+Internet
+Client
+le programme fournit les données serveur
+Architecture 3 –tiers VS Architecture 4-tiers Dépendances
+Présentation
+Traitement métier
+Persistance
+utilisateur
+*BDD : Base de données
+Présentation
+Application
+Domaine
+utilisateur
+Persistance
+Architecture 4-tiers
+*BDD : Base de données
+utilisateur
+Présentation
+CommanderController
+Application
+ICreerCommande
+CreerCommande
+IDatabaseService
+Domaine
+Commande
+Persistance
+DatabaseService
+Modélisation autour du domaine : Architecture Hexagonale
+• Basée sur des ports et adaptateurs pour découpler le domaine métier des
+technologies externes. • Communication fluide entre le cœur de l'application et ses interfaces.
+Principe
+• Flexibilité dans le choix des technologies (bases de données, APIs, etc.).Facilité à tester le domaine métier indépendamment des détails techniques.
+Avantages
+Inconvénients • Peut devenir complexe avec un grand nombre d'adaptateurs.
+Exemples Applications interactives avec plusieurs systèmes externes (API, services tiers).typiques
+Cas d’utilisation au centre : Architecture Oignon VS architecture Clean
+Les deux architectures favorisent un faible couplage et une testabilité élevée. Onion est simple et efficace pour des projets centrés sur le domaine, tandis que Clean est plus structuré pour gérer des projets à grande échelle.
+Jeffrey Pallermo Robert C. Martin
+Concentre l’application autour du domaine métier, avec des couches
+concentriques pour découpler les technologies externes. Idéal pour
+des systèmes centrés sur le domaine, avec une complexité modérée.
+Étend le concept de l’architecture en oignons en mettant égalementl’accent sur les cas d’utilisation comme priorité. Plus adaptée pourdes systèmes complexes nécessitant évolutivité et maintenabilité.
+Récapulatif
+Aspect Layered Architecture Hexagonal Architecture Clean ArchitectureConcept principal Séparation en couches (UI, Business, Data). Communication par ports et adaptateurs. Dépendance inversée et indépendance des détails.Organisation Couches hiérarchiques strictes. Couche centrale et adaptateurs autour. Cercles concentriques basés sur les dépendances.Couplage Couplage directionnel (de haut en bas). Couplage flexible entre domaine et périphérie. Le domaine est découplé des frameworks et outils.Entrées/Sorties Pas de gestion explicite des entrées/sorties. Ports pour définir des interfaces spécifiques. Les cas d’utilisation dictent les entrées/sorties.Hautement testable avec des règles métier indépendantes. Très testable grâce à la séparation stricte.
+Modérément testable, dépend des couches
+Testabilité inférieures.
+Orientée domaine avec priorité aux cas
+d’utilisation.
+Orientée domaine avec adaptation aux
+technologies.
+Principalement orientée infrastructure. Orientation
+Complexité initiale pour bien organiser les cercles.Peut devenir complexe avec de nombreux
+adaptateurs. Points faibles Rigidité des couches, dépendance aux outils.
+Robuste, évolutif, et axé sur le domaine.Flexible et modulaire, indépendant des
+technologies. Points forts Simple à comprendre et à implémenter.
+Exemples typiques Applications web classiques avec MVC. Applications nécessitant flexibilité aux frontières. Applications complexes nécessitant évolutivité.Layered Architecture est idéale pour des projets simples.
+Hexagonal Architecture excelle dans les projets modulaires nécessitant une grande flexibilité.
+Clean Architecture est adaptée aux systèmes complexes avec des exigences élevées en évolutivité et maintenabilité.
+Architecture par fonction technique VS Architecture par domaine fonctionnel
+Présentation
+Traitement métier
+Persistance
+Service métier 1 Service métier 2
+Service métier 3 Service métier 4
+Service métier 5 Service métier 6
+Architecture patronnée par fonction
+technique
+Architecture patronnée par domaine
+fonctionnel
+L’interconnexion des services : Architecture SOA « Service Oriented Architecture »Qu’est ce que c’est ?
+« Une approche de conception ou les différentes parties d’une application sont construites comme des services
+distincts, interagissant les uns avec les autres par le biais de communication bien définies »
+Pourquoi?
+• Réutilisabilité
+• Interopérabilité et standardisation
+• Couplage faible
+Quels objectifs ?
+• Aligner les solution IT aux objectifs métier • Agilité, réactivité aux changements et nouvelles demandes
+• Réduire les couts par la standardisation et la réutilisabilité
+Architecture SOA « Service Oriented Architecture »
+Processus Métier
+Services
+Ressources
+Service Métier 1 Service Métier 1 Service Métier 1
+Service données 1 Service données 2 Service données 3
+Architecture SOA – Approche par la fonction
+Commander un logiciel
+Commander un ordinateur
+portable
+Commander
+Ordinateur logiciel
+API
+API API
+API API Services
+d’accès aux
+données
+Services
+métier
+Approche par ressources
+Qu’est ce que c’est ?
+Une ressource regroupe un ensemble de données partageant un cycle de vie commun (crées, modifiées,
+supprimées ensemble).
+Clients
+• Nom
+• Prénom
+• Date de
+naissance
+• Age
+Adresses
+• Type
+• Rue
+Commandes • …
+• Date • Statut • Produits
+Panier • Statut • Produits
+• …
+• Les données de ressources peuvent être persistées ou calculées
+• Une ressource peut se décomposer en sous-ressource représentant un sous-ensemble de données ayant un cycle de vie propre
+• Une ressource peur être liée à un autre. Toutefois, la ressource liée a un cycle de vie totalement indépendant
+Architecture REST - Approche par la ressource
+Commander un logiciel
+Commander un
+ordinateur portable
+Commander
+Ordinateur logiciel
+API
+API API
+API API Services
+d’accès aux
+données
+Services
+métier
+API
+API
+API
+API API
+Paniers
+Clients Commandes
+Oordinateur
+portable
+logiciels
+Approche SOA par la fonction Approche REST par la ressource
+REST : Respresentational State Transfer
+« Application Programming Interface »
+Application distance
+API
+C R U D
+Application Commandes
+Créer commande
+commande
+API – c’est quoi la différence?
+Il y a 4 étapes clés de la conception d’API :
+1 - Déterminer ce que l’API doit faire
+2 - Définir les contrats API (L’API ouverte) 3 - Validez vos hypothèses avec des tests
+4 - Documenter l’API (points de terminaison, codes d’erreur, etc.) Voici 5 autres conseils pour concevoir une
+bonne API.
+1) Privilégiez la cohérence et la simplicité
+Votre API doit avoir des conventions de nommage, des formats de réponse et une stratégie de gestion des
+erreurs cohérents. La simplicité de la conception de l’API permet aux développeurs de comprendre et d’intégrer
+plus facilement votre API.
+2) Adoptez les principes RESTful
+Vous devez concevoir votre API selon les principes RESTful, en mettant l’accent sur l’absence d’état, une
+architecture client-serveur et une interface uniforme. Les API REST sont la norme dans la majorité des
+applications .NET.
+3) Utilisez les codes d’état HTTP corrects
+Vous devez utiliser les codes d’état HTTP corrects pour communiquer le résultat des requêtes d’API. Cela inclut
+les opérations réussies (2xx), erreurs client (4xx)et les erreurs de serveur (5xx). Il aide les utilisateurs de votre API
+à comprendre ce qui n’a pas fonctionné et comment y remédier.
+4) Implémenter la gestion des versions d’API
+Planifiez les modifications futures en implémentant la gestion des versions dans votre API. Cela vous permet
+d’apporter des améliorations et des modifications sans casser les intégrations client existantes. L’approche la plus
+courante est la gestion des versions d’URL.
+5) AuthN et AuthZ
+Mettez en œuvre l’authentification, l’autorisation et le chiffrement des données si nécessaire. Il est essentiel de
+protéger les données sensibles et de s’assurer que seuls les utilisateurs autorisés peuvent accéder à des points de
+terminaison d’API spécifiques pour maintenir la confiance et l’intégrité de votre API.
+Swagger et documentation Open API
+Swagger est un Framework open source pour concevoir , créer, documenter et consommer des services
+web Restful. Ce dernier simplifie le développement des API et se base sur les spécification OpenAPI
+OpenAPI est une Spécification pour décrire des API Restful de marnière standardisée et indépendants du
+langage. Ses standards incluent :
+- Utilisation de YAML ou json pour décrie l’API
+- Définitions des Endpoints et des opérations
+- Spécifications des réponses
+- Documentation automatique
+Concevoir une API REST
+1 – Ressources : Chaque ressource a son endpoint unique
+2 – URI (Uniforme Resource Identifier) : Identifie la ressource et respecte la syntaxe standards
+(/clients/clientsId)
+3 - Verbes Https : Utiliser les verbes http dans l’endpoint. POST (créer) GET(lire) PUT ou PATCH (Modifier)
+et DELETE (supprimer)
+4 - Codes retours standards : Ne plus répondre en 200 mais utiliser les répondes HTPP (200, 400, etc)
+5 – Verssioning
+6- Référencement et documentation
+API Manager
+Une plateforme logicielle qui permet de créer, gérer, surveiller et sécuriser les API
+Microservices
+Style d’architecture qui divise une application en services autonomes, déployables indépendamment,
+communiquant via des APIs bien définies
+Synchrone Et Asynchrone
+Une opération synchrone bloque le flux d’exécution
+jusqu’à la fin d’une opération
+Une Opération asynchrone permet au programme de
+continuer pendant l’attente d’une opération
+EDA « Architecture orientée évènements »
+Style d’architecture qui qui repose sur la production, la détection, la consommation et la réaction aux
+évènements dans un système informatique.
+EDA « Architecture orientée évènements »
+Un événement est une occurrence identifiable et significative qui a lieu dans un système ou dans son
+environnement. Ces événements peuvent être des actions de l'utilisateur, des changements d'état, des
+notifications externes, etc.
+Publisher SubscriberEvent BUS 

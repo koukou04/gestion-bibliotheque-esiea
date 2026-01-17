@@ -1,18 +1,29 @@
+<<<<<<< HEAD:src/main/java/com/bibliotheque/gestion_bibliotheque/application/usecase/GestionLivreUseCase.java
 package com.bibliotheque.gestion_bibliotheque.application.usecase;
+=======
+package com.bibliotheque.gestion_bibliotheque.application.service;
+>>>>>>> koussaila:src/main/java/com/bibliotheque/gestion_bibliotheque/application/service/LivreService.java
 
 import com.bibliotheque.gestion_bibliotheque.domain.entities.Livre;
 import com.bibliotheque.gestion_bibliotheque.domain.repository.LivreRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+<<<<<<< HEAD:src/main/java/com/bibliotheque/gestion_bibliotheque/application/usecase/GestionLivreUseCase.java
 @Service
 public class GestionLivreUseCase {
 
     private final LivreRepository livreRepository;
 
     public GestionLivreUseCase(LivreRepository livreRepository) {
+=======
+public class LivreService {
+
+    private final LivreRepository livreRepository;
+
+    public LivreService(LivreRepository livreRepository) {
+>>>>>>> koussaila:src/main/java/com/bibliotheque/gestion_bibliotheque/application/service/LivreService.java
         this.livreRepository = livreRepository;
     }
 
@@ -87,14 +98,25 @@ public class GestionLivreUseCase {
     public boolean estDisponible(Long livreId) {
         Livre livre = livreRepository.findById(livreId)
                 .orElseThrow(() -> new IllegalArgumentException("Livre non trouvé"));
-        return livre.estDisponible();
+        // ✅ Logique métier déplacée ICI
+        return livre.getNombreDisponibles() != null && livre.getNombreDisponibles() > 0;
     }
 
     // === MÉTHODE MÉTIER: Emprunter un exemplaire ===
     public void emprunterExemplaire(Long livreId) {
         Livre livre = livreRepository.findById(livreId)
                 .orElseThrow(() -> new IllegalArgumentException("Livre non trouvé"));
+<<<<<<< HEAD:src/main/java/com/bibliotheque/gestion_bibliotheque/application/usecase/GestionLivreUseCase.java
         livre.emprunter();
+=======
+
+        // ✅ Logique métier déplacée ICI
+        if (livre.getNombreDisponibles() == null || livre.getNombreDisponibles() <= 0) {
+            throw new IllegalStateException("Aucun exemplaire disponible pour le livre: " + livre.getTitre());
+        }
+
+        livre.setNombreDisponibles(livre.getNombreDisponibles() - 1);
+>>>>>>> koussaila:src/main/java/com/bibliotheque/gestion_bibliotheque/application/service/LivreService.java
         livreRepository.save(livre);
     }
 
@@ -102,7 +124,17 @@ public class GestionLivreUseCase {
     public void retournerExemplaire(Long livreId) {
         Livre livre = livreRepository.findById(livreId)
                 .orElseThrow(() -> new IllegalArgumentException("Livre non trouvé"));
+<<<<<<< HEAD:src/main/java/com/bibliotheque/gestion_bibliotheque/application/usecase/GestionLivreUseCase.java
         livre.retourner();
+=======
+
+        // ✅ Logique métier déplacée ICI
+        if (livre.getNombreDisponibles() >= livre.getNombreExemplaires()) {
+            throw new IllegalStateException("Erreur: tous les exemplaires sont déjà en stock");
+        }
+
+        livre.setNombreDisponibles(livre.getNombreDisponibles() + 1);
+>>>>>>> koussaila:src/main/java/com/bibliotheque/gestion_bibliotheque/application/service/LivreService.java
         livreRepository.save(livre);
     }
 }
