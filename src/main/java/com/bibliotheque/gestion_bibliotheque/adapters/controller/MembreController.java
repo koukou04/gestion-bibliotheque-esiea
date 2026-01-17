@@ -38,25 +38,26 @@ public class MembreController {
 
     // === OBTENIR LES MEMBRES (avec filtres optionnels) ===
     @GetMapping
-    @Operation(summary = "Obtenir les membres", description = "Récupère les membres avec filtres optionnels (email, typeMembre)")
+    @Operation(summary = "Obtenir les membres", description = "Récupère tous les membres, ou filtre par email ou typeMembre si spécifié")
     public ResponseEntity<List<MembreDto>> obtenirMembres(
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String typeMembre) {
 
-        // Si email est fourni, retourner le membre correspondant (ou liste vide)
+        // Si email est fourni, rechercher par email
         if (email != null) {
             return membreService.trouverMembreParEmail(email)
                     .map(membre -> ResponseEntity.ok(List.of(MembreMapper.toDto(membre))))
                     .orElse(ResponseEntity.ok(List.of()));
         }
 
-        List<Membre> membres;
+        // Si typeMembre est fourni, filtrer par type
         if (typeMembre != null) {
-            membres = membreService.obtenirMembresParType(typeMembre);
-        } else {
-            membres = membreService.obtenirTousLesMembres();
+            List<Membre> membres = membreService.obtenirMembresParType(typeMembre);
+            return ResponseEntity.ok(MembreMapper.toDtoList(membres));
         }
 
+        // Sinon, retourner tous les membres
+        List<Membre> membres = membreService.obtenirTousLesMembres();
         return ResponseEntity.ok(MembreMapper.toDtoList(membres));
     }
 
