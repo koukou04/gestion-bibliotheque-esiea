@@ -1,14 +1,5 @@
-package com.bibliotheque.gestion_bibliotheque.config;
+﻿package com.bibliotheque.gestion_bibliotheque.config;
 
-<<<<<<< HEAD
-
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.Contact;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-=======
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
@@ -22,22 +13,10 @@ import org.springframework.context.annotation.Configuration;
  *
  * Documentation accessible à : http://localhost:8080/swagger-ui.html
  */
->>>>>>> koussaila
 @Configuration
 public class SwaggerConfig {
 
     @Bean
-<<<<<<< HEAD
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title("API Gestion de Bibliothèque")
-                        .version("1.0.0")
-                        .description("API REST pour gérer une bibliothèque selon les principes de Clean Architecture")
-                        .contact(new Contact()
-                                .name("Équipe ESIEA")
-                                .email("ramanadane@esiea.et.fr")));
-=======
     public OpenAPI bibliothequeOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
@@ -50,6 +29,5 @@ public class SwaggerConfig {
                         .license(new License()
                                 .name("Apache 2.0")
                                 .url("https://www.apache.org/licenses/LICENSE-2.0")));
->>>>>>> koussaila
     }
 }
