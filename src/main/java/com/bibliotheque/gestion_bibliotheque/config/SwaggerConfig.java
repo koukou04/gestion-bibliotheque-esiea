@@ -1,4 +1,4 @@
-﻿package com.bibliotheque.gestion_bibliotheque.config;
+package com.bibliotheque.gestion_bibliotheque.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
